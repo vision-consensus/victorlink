@@ -10,8 +10,8 @@ After compiling finished, you should type the arguments that the constructor nee
 
 Here is the paraphrase:
 
-- `_vct`: The address of the Win token.
-- `_paymentAmount`: The amount paid of WIN paid to each oracle per submission, in wei (units of 10⁻¹⁸ WIN).
+- `_vct`: The address of the VCT token.
+- `_paymentAmount`: The amount paid of VCT paid to each oracle per submission, in wei (units of 10⁻¹⁸ VCT).
 - `_timeout`:  the number of seconds after the previous round that are allowed to lapse before allowing an oracle to skip an unfinished round.
 - `_validator`: an optional contract address for validating external validation of answers.
 - `_minSubmissionValue`: an immutable check for a lower bound of what submission values are accepted from an oracle.

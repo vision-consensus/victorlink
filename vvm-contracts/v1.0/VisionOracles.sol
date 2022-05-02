@@ -103,7 +103,7 @@ library SafeMath {
     }
 }
 
-interface WinklinkRequestInterface {
+interface VictorlinkRequestInterface {
     function oracleRequest(
         address sender,
         uint256 payment,
@@ -138,7 +138,7 @@ interface OracleInterface {
     function withdrawable() external view returns (uint256);
 }
 
-contract WinkMid {
+contract VictorMid {
 
     function setToken(address tokenAddress) public ;
 
@@ -167,10 +167,10 @@ contract VRC20Interface {
 
 
 /**
- * @title The Winklink Oracle contract
+ * @title The Victorlink Oracle contract
  * @notice Node operators can deploy this contract to fulfill requests sent to them
  */
-contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
+contract Oracle is VictorlinkRequestInterface, OracleInterface, Ownable {
     using SafeMath for uint256;
 
     uint256 constant public EXPIRY_TIME = 5 minutes;
@@ -181,7 +181,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
     uint256 constant private EXPECTED_REQUEST_WORDS = 2;
     uint256 constant private MINIMUM_REQUEST_LENGTH = SELECTOR_LENGTH + (32 * EXPECTED_REQUEST_WORDS);
 
-    WinkMid internal victorMid;
+    VictorMid internal victorMid;
     VRC20Interface internal token;
     mapping(bytes32 => bytes32) private commitments;
     mapping(address => bool) private authorizedNodes;
@@ -210,7 +210,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
      */
     constructor(address _link, address _victorMid) public Ownable() {
         token = VRC20Interface(_link); // external but already deployed and unalterable
-        victorMid = WinkMid(_victorMid);
+        victorMid = VictorMid(_victorMid);
     }
 
     /**
@@ -227,7 +227,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
         bytes _data
     )
     public
-    onlyWinkMid
+    onlyVictorMid
     validRequestLength(_data)
     permittedFunctionsForLINK(_data)
     {
@@ -252,9 +252,9 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
     }
 
     /**
-     * @notice Creates the Winklink request
+     * @notice Creates the Victorlink request
      * @dev Stores the hash of the params as the on-chain commitment for the request.
-     * Emits OracleRequest event for the Winklink node to detect.
+     * Emits OracleRequest event for the Victorlink node to detect.
      * @param _sender The sender of the request
      * @param _payment The amount of payment given (specified in wei)
      * @param _specId The Job Specification ID
@@ -275,7 +275,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
         bytes _data
     )
     external
-    onlyWinkMid
+    onlyVictorMid
     checkCallbackAddress(_callbackAddress)
     {
         bytes32 requestId = keccak256(abi.encodePacked(_sender, _nonce));
@@ -305,7 +305,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
     }
 
     /**
-     * @notice Called by the Winklink node to fulfill requests
+     * @notice Called by the Victorlink node to fulfill requests
      * @dev Given params must hash back to the commitment stored from `oracleRequest`.
      * Will call the callback address' callback function without bubbling up error
      * checking in a `require` so that the node can get paid.
@@ -349,7 +349,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
 
     /**
      * @notice Use this to check if a node is authorized for fulfilling requests
-     * @param _node The address of the Winklink node
+     * @param _node The address of the Victorlink node
      * @return The authorization status of the node
      */
     function getAuthorizationStatus(address _node) external view returns (bool) {
@@ -358,7 +358,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
 
     /**
      * @notice Sets the fulfillment permission for a given node. Use `true` to allow, `false` to disallow.
-     * @param _node The address of the Winklink node
+     * @param _node The address of the Victorlink node
      * @param _allowed Bool value to determine if the node can fulfill requests
      */
     function setFulfillmentPermission(address _node, bool _allowed) external onlyOwner {
@@ -367,7 +367,7 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
 
     /**
      * @notice Allows the node operator to withdraw earned LINK to a given address
-     * @dev The owner of the contract can be another wallet and does not have to be a Winklink node
+     * @dev The owner of the contract can be another wallet and does not have to be a Victorlink node
      * @param _recipient The address to send the LINK token to
      * @param _amount The amount to send (specified in wei)
      */
@@ -454,8 +454,8 @@ contract Oracle is WinklinkRequestInterface, OracleInterface, Ownable {
     /**
      * @dev Reverts if not sent from the LINK token
      */
-    modifier onlyWinkMid() {
-        require(msg.sender == address(victorMid), "Must use WinkMid");
+    modifier onlyVictorMid() {
+        require(msg.sender == address(victorMid), "Must use VictorMid");
         _;
     }
 

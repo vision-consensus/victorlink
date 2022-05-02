@@ -20,7 +20,7 @@ abstract contract VRC20Interface {
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
 
-abstract contract WinkMid {
+abstract contract VictorMid {
 
     function setToken(address tokenAddress) public virtual;
 
@@ -404,10 +404,10 @@ library CBOR {
 }
 
 /**
- * @title Library for common Winklink functions
+ * @title Library for common Victorlink functions
  * @dev Uses imported CBOR library for encoding to buffer
  */
-library Winklink {
+library Victorlink {
     uint256 internal constant defaultBufferSize = 256; // solhint-disable-line const-name-snakecase
 
     using Buffer for Buffer.buffer;
@@ -422,7 +422,7 @@ library Winklink {
     }
 
     /**
-     * @notice Initializes a Winklink request
+     * @notice Initializes a Victorlink request
      * @dev Sets the ID, callback address, and callback function signature on the request
      * @param self The uninitialized request
      * @param _id The Job Specification ID
@@ -435,7 +435,7 @@ library Winklink {
         bytes32 _id,
         address _callbackAddress,
         bytes4 _callbackFunction
-    ) internal pure returns (Winklink.Request memory) {
+    ) internal pure returns (Victorlink.Request memory) {
         Buffer.init(self.buf, defaultBufferSize);
         self.id = _id;
         self.callbackAddress = _callbackAddress;
@@ -526,7 +526,7 @@ library Winklink {
     }
 }
 
-interface WinklinkRequestInterface {
+interface VictorlinkRequestInterface {
     function vrfRequest(
         address sender,
         uint256 payment,
@@ -540,12 +540,12 @@ interface WinklinkRequestInterface {
 }
 
 /**
- * @title The WinklinkClient contract
+ * @title The VictorlinkClient contract
  * @notice Contract writers can inherit this contract in order to create requests for the
- * Winklink network
+ * Victorlink network
  */
-contract WinklinkClient {
-    using Winklink for Winklink.Request;
+contract VictorlinkClient {
+    using Victorlink for Victorlink.Request;
     using SafeMathVision for uint256;
 
     uint256 constant internal LINK = 10 ** 18;
@@ -553,23 +553,23 @@ contract WinklinkClient {
     address constant private SENDER_OVERRIDE = address(0);
     uint256 constant private ARGS_VERSION = 1;
 
-    WinkMid internal victorMid;
+    VictorMid internal victorMid;
     VRC20Interface internal token;
-    WinklinkRequestInterface private oracle;
+    VictorlinkRequestInterface private oracle;
 
     /**
      * @notice Creates a request that can hold additional parameters
      * @param _specId The Job Specification ID that the request will be created for
      * @param _callbackAddress The callback address that the response will be sent to
      * @param _callbackFunctionSignature The callback function signature to use for the callback address
-     * @return A Winklink Request struct in memory
+     * @return A Victorlink Request struct in memory
      */
-    function buildWinklinkRequest(
+    function buildVictorlinkRequest(
         bytes32 _specId,
         address _callbackAddress,
         bytes4 _callbackFunctionSignature
-    ) internal pure returns (Winklink.Request memory) {
-        Winklink.Request memory req;
+    ) internal pure returns (Victorlink.Request memory) {
+        Victorlink.Request memory req;
         return req.initialize(_specId, _callbackAddress, _callbackFunctionSignature);
     }
 
@@ -577,12 +577,12 @@ contract WinklinkClient {
      * @notice Sets the LINK token address
      * @param _link The address of the LINK token contract
      */
-    function setWinklinkToken(address _link) internal {
+    function setVictorlinkToken(address _link) internal {
         token = VRC20Interface(_link);
     }
 
-    function setWinkMid(address _victorMid) internal {
-        victorMid = WinkMid(_victorMid);
+    function setVictorMid(address _victorMid) internal {
+        victorMid = VictorMid(_victorMid);
     }
 
     /**
@@ -599,12 +599,12 @@ contract WinklinkClient {
 
     /**
      * @notice Encodes the request to be sent to the vrfCoordinator contract
-     * @dev The Winklink node expects values to be in order for the request to be picked up. Order of types
+     * @dev The Victorlink node expects values to be in order for the request to be picked up. Order of types
      * will be validated in the VRFCoordinator contract.
-     * @param _req The initialized Winklink Request
+     * @param _req The initialized Victorlink Request
      * @return The bytes payload for the `transferAndCall` method
      */
-    function encodeVRFRequest(Winklink.Request memory _req)
+    function encodeVRFRequest(Victorlink.Request memory _req)
     internal
     view
     returns (bytes memory)

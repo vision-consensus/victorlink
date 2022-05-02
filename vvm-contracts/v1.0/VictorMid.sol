@@ -69,7 +69,7 @@ contract Receiver {
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-contract WinkMid is Ownable {
+contract VictorMid is Ownable {
 
   VRC20Interface private token ;
 

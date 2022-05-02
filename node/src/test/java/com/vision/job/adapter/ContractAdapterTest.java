@@ -5,7 +5,7 @@ import static com.vision.job.adapters.ContractAdapter.TradePair.DICE_VS;
 import static com.vision.job.adapters.ContractAdapter.TradePair.VAN_VS;
 import static com.vision.job.adapters.ContractAdapter.TradePair.SUN_VS;
 import static com.vision.job.adapters.ContractAdapter.TradePair.USDJ_VS;
-import static com.vision.job.adapters.ContractAdapter.TradePair.WIN_VS;
+import static com.vision.job.adapters.ContractAdapter.TradePair.VCT_VS;
 
 import com.vision.job.adapters.ContractAdapter;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class ContractAdapterTest {
     System.out.println(ContractAdapter.getDecimal(BTC_VS.getVrc20Addr()));
     System.out.println(ContractAdapter.getDecimal(DICE_VS.getVrc20Addr()));
     System.out.println(ContractAdapter.getDecimal(SUN_VS.getVrc20Addr()));
-    System.out.println(ContractAdapter.getDecimal(WIN_VS.getVrc20Addr()));
+    System.out.println(ContractAdapter.getDecimal(VCT_VS.getVrc20Addr()));
   }
 
   @Test

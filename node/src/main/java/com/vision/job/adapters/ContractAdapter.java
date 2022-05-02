@@ -139,7 +139,7 @@ public class ContractAdapter {
   public enum TradePair {
     VAN_VS("", ""),
     SUN_VS("", ""),
-    WIN_VS("", ""),
+    VCT_VS("", ""),
     DICE_VS("", ""),
     BTC_VS("", ""),
     USDJ_VS("", ""),

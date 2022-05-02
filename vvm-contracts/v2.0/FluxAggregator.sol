@@ -6,8 +6,8 @@ import "./Owned.sol";
 import "./SafeMath128.sol";
 import "./SafeMath32.sol";
 import "./SafeMath64.sol";
-import "./WinTokenInterface.sol";
-import "./SafeMathWinklink.sol";
+import "./VctTokenInterface.sol";
+import "./SafeMathVictorlink.sol";
 import "./AggregatorValidatorInterface.sol";
 import "./AggregatorInterface.sol";
 import "./AggregatorV3Interface.sol";
@@ -21,7 +21,7 @@ import "./AggregatorV3Interface.sol";
  * answers and their updated at timestamp.
  */
 contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
-  using SafeMathWinklink for uint256;
+  using SafeMathVictorlink for uint256;
   using SafeMath128 for uint128;
   using SafeMath64 for uint64;
   using SafeMath32 for uint32;
@@ -64,7 +64,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
     uint128 allocated;
   }
 
-  WinTokenInterface public winToken;
+  VctTokenInterface public vctToken;
   AggregatorValidatorInterface public validator;
 
   // Round related params
@@ -84,7 +84,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
   /**
    * @notice To ensure owner isn't withdrawing required funds as oracles are
    * submitting updates, we enforce that the contract maintains a minimum
-   * reserve of RESERVE_ROUNDS * oracleCount() WIN earmarked for payment to
+   * reserve of RESERVE_ROUNDS * oracleCount() VCT earmarked for payment to
    * oracles. (Of course, this doesn't prevent the contract from running out of
    * funds without the owner's intervention.)
    */
@@ -145,8 +145,8 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
 
   /**
    * @notice set up the aggregator with initial configuration
-   * @param _vct The address of the WIN token
-   * @param _paymentAmount The amount paid of WIN paid to each oracle per submission, in wei (units of 10⁻¹⁸ WIN)
+   * @param _vct The address of the VCT token
+   * @param _paymentAmount The amount paid of VCT paid to each oracle per submission, in wei (units of 10⁻¹⁸ VCT)
    * @param _timeout is the number of seconds after the previous round that are
    * allowed to lapse before allowing an oracle to skip an unfinished round
    * @param _validator is an optional contract address for validating
@@ -168,7 +168,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
     uint8 _decimals,
     string memory _description
   ) public {
-    winToken = WinTokenInterface(_vct);
+    vctToken = VctTokenInterface(_vct);
     updateFutureRounds(_paymentAmount, 0, 0, 0, _timeout);
     setValidator(_validator);
     minSubmissionValue = _minSubmissionValue;
@@ -304,14 +304,14 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
   }
 
   /**
-   * @notice recalculate the amount of WIN available for payouts
+   * @notice recalculate the amount of VCT available for payouts
    */
   function updateAvailableFunds()
     public
   {
     Funds memory funds = recordedFunds;
 
-    uint256 nowAvailable = winToken.balanceOf(address(this)).sub(funds.allocated);
+    uint256 nowAvailable = vctToken.balanceOf(address(this)).sub(funds.allocated);
 
     if (funds.available != nowAvailable) {
       recordedFunds.available = uint128(nowAvailable);
@@ -500,7 +500,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
 
 
   /**
-   * @notice query the available amount of WIN for an oracle to withdraw
+   * @notice query the available amount of VCT for an oracle to withdraw
    */
   function withdrawablePayment(address _oracle)
     external
@@ -511,18 +511,18 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
   }
 
   /**
-   * @notice transfers the oracle's WIN to another address. Can only be called
+   * @notice transfers the oracle's VCT to another address. Can only be called
    * by the oracle's admin.
-   * @param _oracle is the oracle whose WIN is transferred
-   * @param _recipient is the address to send the WIN to
-   * @param _amount is the amount of WIN to send
+   * @param _oracle is the oracle whose VCT is transferred
+   * @param _recipient is the address to send the VCT to
+   * @param _amount is the amount of VCT to send
    */
   function withdrawPayment(address _oracle, address _recipient, uint256 _amount)
     external
   {
     require(oracles[_oracle].admin == msg.sender, "only callable by admin");
 
-    // Safe to downcast _amount because the total amount of WIN is less than 2^128.
+    // Safe to downcast _amount because the total amount of VCT is less than 2^128.
     uint128 amount = uint128(_amount);
     uint128 available = oracles[_oracle].withdrawable;
     require(available >= amount, "insufficient withdrawable funds");
@@ -530,13 +530,13 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
     oracles[_oracle].withdrawable = available.sub(amount);
     recordedFunds.allocated = recordedFunds.allocated.sub(amount);
 
-    assert(winToken.transfer(_recipient, uint256(amount)));
+    assert(vctToken.transfer(_recipient, uint256(amount)));
   }
 
   /**
-   * @notice transfers the owner's WIN to another address
-   * @param _recipient is the address to send the WIN to
-   * @param _amount is the amount of WIN to send
+   * @notice transfers the owner's VCT to another address
+   * @param _recipient is the address to send the VCT to
+   * @param _amount is the amount of VCT to send
    */
   function withdrawFunds(address _recipient, uint256 _amount)
     external
@@ -544,7 +544,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
   {
     uint256 available = uint256(recordedFunds.available);
     require(available.sub(requiredReserve(paymentAmount)) >= _amount, "insufficient reserve funds");
-    require(winToken.transfer(_recipient, _amount), "token transfer failed");
+    require(vctToken.transfer(_recipient, _amount), "token transfer failed");
     updateAvailableFunds();
   }
 
@@ -628,7 +628,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
   }
 
   /**
-   * @notice called through WIN's transferAndCall to update available funds
+   * @notice called through VCT's transferAndCall to update available funds
    * in the same transaction as the funds were transferred to the aggregator
    * @param _data is mostly ignored. It is checked for length, to be sure
    * nothing strange is passed in.

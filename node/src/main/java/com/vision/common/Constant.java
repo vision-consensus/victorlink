@@ -51,7 +51,7 @@ public class Constant {
   // pairs
   public static final String PAIR_TYPE_VAN_VS = "van-vs";
   public static final String PAIR_TYPE_SUN_VS = "sun-vs";
-  public static final String PAIR_TYPE_WIN_VS = "win-vs";
+  public static final String PAIR_TYPE_VCT_VS = "vct-vs";
   public static final String PAIR_TYPE_DICE_VS = "dice-vs";
   public static final String PAIR_TYPE_BTC_VS = "btc-vs";
   public static final String PAIR_TYPE_USDJ_VS = "usdj-vs";

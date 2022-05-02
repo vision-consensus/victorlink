@@ -59,7 +59,7 @@ public class OracleApplication {
 
 		ReSender reSender = new ReSender(JobSubscriber.jobRunner.visionTxService);
 		reSender.run();
-		log.info("==================Wink Link start success================");
+		log.info("==================Victor Link start success================");
 	}
 
 	static class Args {

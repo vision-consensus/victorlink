@@ -58,8 +58,8 @@ public class VanSwapAdapter extends BaseAdapter {
           case Constant.PAIR_TYPE_SUN_VS:
             result = ContractAdapter.getTradePriceWithVS(TradePair.SUN_VS);
             break;
-          case Constant.PAIR_TYPE_WIN_VS:
-            result = ContractAdapter.getTradePriceWithVS(TradePair.WIN_VS);
+          case Constant.PAIR_TYPE_VCT_VS:
+            result = ContractAdapter.getTradePriceWithVS(TradePair.VCT_VS);
             break;
           case Constant.PAIR_TYPE_DICE_VS:
             result = ContractAdapter.getTradePriceWithVS(TradePair.DICE_VS);

@@ -97,7 +97,7 @@ import "./Owned.sol";
  * @dev cost. This cost scales with the number of blocks the VRF oracle waits
  * @dev until it calls responds to a request.
  */
-abstract contract VRFConsumerBase is VRFRequestIDBase, WinklinkClient {
+abstract contract VRFConsumerBase is VRFRequestIDBase, VictorlinkClient {
     using SignedSafeMath for int256;
 
     event VRFRequested(bytes32 indexed id);
@@ -142,7 +142,7 @@ abstract contract VRFConsumerBase is VRFRequestIDBase, WinklinkClient {
      * @dev VRF seed it ultimately uses.
      *
      * @param _keyHash ID of public key against which randomness is generated
-     * @param _fee The amount of WIN to send with the request
+     * @param _fee The amount of VCT to send with the request
      * @param _seed seed mixed into the input of the VRF.
      *
      * @return requestId unique ID for this request
@@ -154,8 +154,8 @@ abstract contract VRFConsumerBase is VRFRequestIDBase, WinklinkClient {
     function requestRandomness(bytes32 _keyHash, uint256 _fee, uint256 _seed)
       internal returns (bytes32 requestId)
     {
-        Winklink.Request memory _req;
-        _req = buildWinklinkRequest(_keyHash, address(this), this.rawFulfillRandomness.selector);
+        Victorlink.Request memory _req;
+        _req = buildVictorlinkRequest(_keyHash, address(this), this.rawFulfillRandomness.selector);
         _req.nonce = nonces[_keyHash];
         _req.buf.buf = abi.encode(_keyHash, _seed);
         token.approve(victorMidAddress(), _fee);
@@ -177,14 +177,14 @@ abstract contract VRFConsumerBase is VRFRequestIDBase, WinklinkClient {
     }
 
     /**
-     * @param _vct The address of the WIN token
-     * @param _victorMid The address of the WinkMid token
+     * @param _vct The address of the VCT token
+     * @param _victorMid The address of the VictorMid token
      * @param _vrfCoordinator The address of the VRFCoordinator contract
      * @dev https://docs.chain.link/docs/link-token-contracts
      */
     constructor(address _vrfCoordinator, address _vct, address _victorMid) public {
-        setWinklinkToken(_vct);
-        setWinkMid(_victorMid);
+        setVictorlinkToken(_vct);
+        setVictorMid(_victorMid);
         vrfCoordinator = _vrfCoordinator;
     }
 

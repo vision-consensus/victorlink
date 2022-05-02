@@ -30,7 +30,7 @@ contract VRFDemo is VRFConsumerBase, Owned {
      * @dev   Fee:        0.1 LINK (100000000000000000)
      *
      * @param vrfCoordinator address of the VRF Coordinator
-     * @param win address of the WIN token
+     * @param win address of the VCT token
      * @param victorMid address of victorMid token
      * @param keyHash bytes32 representing the hash of the VRF job
      * @param fee uint256 fee to pay the VRF oracle
@@ -58,7 +58,7 @@ contract VRFDemo is VRFConsumerBase, Owned {
         /*onlyOwner*/ //DEBUG TODO
         returns (bytes32 requestId)
     {
-        require(victorMid.balanceOf(address(this)) >= s_fee, "Not enough WIN to pay fee");
+        require(victorMid.balanceOf(address(this)) >= s_fee, "Not enough VCT to pay fee");
         //require(s_results[roller] == 0, "Already rolled"); //DEBUG TODO
         requestId = requestRandomness(s_keyHash, s_fee, userProvidedSeed);
         //s_rollers[requestId] = roller; //DEBUG TODO
@@ -97,16 +97,16 @@ contract VRFDemo is VRFConsumerBase, Owned {
     }
 
     /**
-     * @notice Withdraw WIN from this contract.
+     * @notice Withdraw VCT from this contract.
      * @dev this is an example only, and in a real contract withdrawals should
      * happen according to the established withdrawal pattern: 
      * https://docs.soliditylang.org/en/v0.4.24/common-patterns.html#withdrawal-from-contracts
-     * @param to the address to withdraw WIN to
-     * @param value the amount of WIN to withdraw
+     * @param to the address to withdraw VCT to
+     * @param value the amount of VCT to withdraw
      */
-    function withdrawWIN(address to, uint256 value) public onlyOwner {
+    function withdrawVCT(address to, uint256 value) public onlyOwner {
         token.approve(victorMidAddress(), value);
-        require(victorMid.transferFrom(address(this), to, value), "Not enough WIN");
+        require(victorMid.transferFrom(address(this), to, value), "Not enough VCT");
     }
 
     /**

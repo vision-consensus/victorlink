@@ -534,7 +534,7 @@ interface PointerInterface {
     function getAddress() external view returns (address);
 }
 
-interface WinklinkRequestInterface {
+interface VictorlinkRequestInterface {
     function oracleRequest(
         address sender,
         uint256 payment,
@@ -571,10 +571,10 @@ interface AggregatorInterface {
 
 
 /**
- * @title Library for common Winklink functions
+ * @title Library for common Victorlink functions
  * @dev Uses imported CBOR library for encoding to buffer
  */
-library Winklink {
+library Victorlink {
     uint256 internal constant defaultBufferSize = 256; // solhint-disable-line const-name-snakecase
 
     using Buffer for Buffer.buffer;
@@ -589,7 +589,7 @@ library Winklink {
     }
 
     /**
-     * @notice Initializes a Winklink request
+     * @notice Initializes a Victorlink request
      * @dev Sets the ID, callback address, and callback function signature on the request
      * @param self The uninitialized request
      * @param _id The Job Specification ID
@@ -602,7 +602,7 @@ library Winklink {
         bytes32 _id,
         address _callbackAddress,
         bytes4 _callbackFunction
-    ) internal pure returns (Winklink.Request memory) {
+    ) internal pure returns (Victorlink.Request memory) {
         Buffer.init(self.buf, defaultBufferSize);
         self.id = _id;
         self.callbackAddress = _callbackAddress;
@@ -693,7 +693,7 @@ library Winklink {
     }
 }
 
-contract WinkMid {
+contract VictorMid {
 
     function setToken(address tokenAddress) public;
 
@@ -726,12 +726,12 @@ contract VRC20Interface {
 }
 
 /**
- * @title The WinklinkClient contract
+ * @title The VictorlinkClient contract
  * @notice Contract writers can inherit this contract in order to create requests for the
- * Winklink network
+ * Victorlink network
  */
-contract WinklinkClient {
-    using Winklink for Winklink.Request;
+contract VictorlinkClient {
+    using Victorlink for Victorlink.Request;
     using SafeMath for uint256;
 
     uint256 constant internal LINK = 10 ** 18;
@@ -739,64 +739,64 @@ contract WinklinkClient {
     address constant private SENDER_OVERRIDE = 0x0;
     uint256 constant private ARGS_VERSION = 1;
 
-    WinkMid internal victorMid;
+    VictorMid internal victorMid;
     VRC20Interface internal token;
-    WinklinkRequestInterface private oracle;
+    VictorlinkRequestInterface private oracle;
     uint256 private requests = 1;
     mapping(bytes32 => address) private pendingRequests;
 
-    event WinklinkRequested(bytes32 indexed id);
-    event WinklinkFulfilled(bytes32 indexed id);
-    event WinklinkCancelled(bytes32 indexed id);
+    event VictorlinkRequested(bytes32 indexed id);
+    event VictorlinkFulfilled(bytes32 indexed id);
+    event VictorlinkCancelled(bytes32 indexed id);
 
     /**
      * @notice Creates a request that can hold additional parameters
      * @param _specId The Job Specification ID that the request will be created for
      * @param _callbackAddress The callback address that the response will be sent to
      * @param _callbackFunctionSignature The callback function signature to use for the callback address
-     * @return A Winklink Request struct in memory
+     * @return A Victorlink Request struct in memory
      */
-    function buildWinklinkRequest(
+    function buildVictorlinkRequest(
         bytes32 _specId,
         address _callbackAddress,
         bytes4 _callbackFunctionSignature
-    ) internal pure returns (Winklink.Request memory) {
-        Winklink.Request memory req;
+    ) internal pure returns (Victorlink.Request memory) {
+        Victorlink.Request memory req;
         return req.initialize(_specId, _callbackAddress, _callbackFunctionSignature);
     }
 
     /**
-     * @notice Creates a Winklink request to the stored oracle address
-     * @dev Calls `WinklinkRequestTo` with the stored oracle address
-     * @param _req The initialized Winklink Request
+     * @notice Creates a Victorlink request to the stored oracle address
+     * @dev Calls `VictorlinkRequestTo` with the stored oracle address
+     * @param _req The initialized Victorlink Request
      * @param _payment The amount of LINK to send for the request
      * @return The request ID
      */
-    function sendWinklinkRequest(Winklink.Request memory _req, uint256 _payment)
+    function sendVictorlinkRequest(Victorlink.Request memory _req, uint256 _payment)
     internal
     returns (bytes32)
     {
-        return sendWinklinkRequestTo(oracle, _req, _payment);
+        return sendVictorlinkRequestTo(oracle, _req, _payment);
     }
 
     /**
-     * @notice Creates a Winklink request to the specified oracle address
+     * @notice Creates a Victorlink request to the specified oracle address
      * @dev Generates and stores a request ID, increments the local nonce, and uses `transferAndCall` to
      * send LINK which creates a request on the target oracle contract.
-     * Emits WinklinkRequested event.
+     * Emits VictorlinkRequested event.
      * @param _oracle The address of the oracle for the request
-     * @param _req The initialized Winklink Request
+     * @param _req The initialized Victorlink Request
      * @param _payment The amount of LINK to send for the request
      * @return The request ID
      */
-    function sendWinklinkRequestTo(address _oracle, Winklink.Request memory _req, uint256 _payment)
+    function sendVictorlinkRequestTo(address _oracle, Victorlink.Request memory _req, uint256 _payment)
     internal
     returns (bytes32 requestId)
     {
         requestId = keccak256(abi.encodePacked(this, requests));
         _req.nonce = requests;
         pendingRequests[requestId] = _oracle;
-        emit WinklinkRequested(requestId);
+        emit VictorlinkRequested(requestId);
         token.approve(victorMidAddress(), _payment);
         require(victorMid.transferAndCall(address(this), _oracle, _payment, encodeRequest(_req)), "unable to transferAndCall to oracle");
         requests += 1;
@@ -808,13 +808,13 @@ contract WinklinkClient {
      * @notice Allows a request to be cancelled if it has not been fulfilled
      * @dev Requires keeping track of the expiration value emitted from the oracle contract.
      * Deletes the request from the `pendingRequests` mapping.
-     * Emits WinklinkCancelled event.
+     * Emits VictorlinkCancelled event.
      * @param _requestId The request ID
      * @param _payment The amount of LINK sent for the request
      * @param _callbackFunc The callback function specified for the request
      * @param _expiration The time of the expiration for the request
      */
-    function cancelWinklinkRequest(
+    function cancelVictorlinkRequest(
         bytes32 _requestId,
         uint256 _payment,
         bytes4 _callbackFunc,
@@ -822,9 +822,9 @@ contract WinklinkClient {
     )
     internal
     {
-        WinklinkRequestInterface requested = WinklinkRequestInterface(pendingRequests[_requestId]);
+        VictorlinkRequestInterface requested = VictorlinkRequestInterface(pendingRequests[_requestId]);
         delete pendingRequests[_requestId];
-        emit WinklinkCancelled(_requestId);
+        emit VictorlinkCancelled(_requestId);
         requested.cancelOracleRequest(_requestId, _payment, _callbackFunc, _expiration);
     }
 
@@ -832,20 +832,20 @@ contract WinklinkClient {
      * @notice Sets the stored oracle address
      * @param _oracle The address of the oracle contract
      */
-    function setWinklinkOracle(address _oracle) internal {
-        oracle = WinklinkRequestInterface(_oracle);
+    function setVictorlinkOracle(address _oracle) internal {
+        oracle = VictorlinkRequestInterface(_oracle);
     }
 
     /**
      * @notice Sets the LINK token address
      * @param _link The address of the LINK token contract
      */
-    function setWinklinkToken(address _link) internal {
+    function setVictorlinkToken(address _link) internal {
         token = VRC20Interface(_link);
     }
 
-    function setWinkMid(address _victorMid) internal {
-        victorMid = WinkMid(_victorMid);
+    function setVictorMid(address _victorMid) internal {
+        victorMid = VictorMid(_victorMid);
     }
 
     /**
@@ -864,7 +864,7 @@ contract WinklinkClient {
      * @notice Retrieves the stored address of the oracle contract
      * @return The address of the oracle contract
      */
-    function WinklinkOracleAddress()
+    function VictorlinkOracleAddress()
     internal
     view
     returns (address)
@@ -878,7 +878,7 @@ contract WinklinkClient {
      * @param _oracle The address of the oracle contract that will fulfill the request
      * @param _requestId The request ID used for the response
      */
-    function addWinklinkExternalRequest(address _oracle, bytes32 _requestId)
+    function addVictorlinkExternalRequest(address _oracle, bytes32 _requestId)
     internal
     notPendingRequest(_requestId)
     {
@@ -889,12 +889,12 @@ contract WinklinkClient {
 
     /**
      * @notice Encodes the request to be sent to the oracle contract
-     * @dev The Winklink node expects values to be in order for the request to be picked up. Order of types
+     * @dev The Victorlink node expects values to be in order for the request to be picked up. Order of types
      * will be validated in the oracle contract.
-     * @param _req The initialized Winklink Request
+     * @param _req The initialized Victorlink Request
      * @return The bytes payload for the `transferAndCall` method
      */
-    function encodeRequest(Winklink.Request memory _req)
+    function encodeRequest(Victorlink.Request memory _req)
     private
     view
     returns (bytes memory)
@@ -916,21 +916,21 @@ contract WinklinkClient {
      * @dev Use if the contract developer prefers methods instead of modifiers for validation
      * @param _requestId The request ID for fulfillment
      */
-    function validateWinklinkCallback(bytes32 _requestId)
+    function validateVictorlinkCallback(bytes32 _requestId)
     internal
-    recordWinklinkFulfillment(_requestId)
+    recordVictorlinkFulfillment(_requestId)
         // solhint-disable-next-line no-empty-blocks
     {}
 
     /**
      * @dev Reverts if the sender is not the oracle of the request.
-     * Emits WinklinkFulfilled event.
+     * Emits VictorlinkFulfilled event.
      * @param _requestId The request ID for fulfillment
      */
-    modifier recordWinklinkFulfillment(bytes32 _requestId) {
+    modifier recordVictorlinkFulfillment(bytes32 _requestId) {
         require(msg.sender == pendingRequests[_requestId], "Source must be the oracle of the request");
         delete pendingRequests[_requestId];
-        emit WinklinkFulfilled(_requestId);
+        emit VictorlinkFulfilled(_requestId);
         _;
     }
 
@@ -945,12 +945,12 @@ contract WinklinkClient {
 }
 
 /**
- * @title An example Winklink contract with aggregation
+ * @title An example Victorlink contract with aggregation
  * @notice Requesters can use this contract as a framework for creating
- * requests to multiple Winklink nodes and running aggregation
+ * requests to multiple Victorlink nodes and running aggregation
  * as the contract receives answers.
  */
-contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
+contract Aggregator is AggregatorInterface, VictorlinkClient, Ownable {
     using SignedSafeMath for int256;
 
     struct Answer {
@@ -985,18 +985,18 @@ contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
      * @dev Sets the LinkToken address for the network, addresses of the oracles,
      * and jobIds in storage.
      * @param _link The address of the LINK token
-     * @param _victorMid The address of the WinkMid token
+     * @param _victorMid The address of the VictorMid token
      */
     constructor(address _link, address _victorMid) public Ownable() {
-        setWinklinkToken(_link);
-        setWinkMid(_victorMid);
+        setVictorlinkToken(_link);
+        setVictorMid(_victorMid);
         //, uint128 _paymentAmount, uint128 _minimumResponses,
         //        address[] _oracles, bytes32[] _jobIds
         //        updateRequestDetails(_paymentAmount, _minimumResponses, _oracles, _jobIds);
     }
 
     /**
-     * @notice Creates a Winklink request for each oracle in the oracles array.
+     * @notice Creates a Victorlink request for each oracle in the oracles array.
      * @dev This example does not include request parameters. Reference any documentation
      * associated with the Job IDs used to determine the required parameters per-request.
      */
@@ -1006,13 +1006,13 @@ contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
     returns (bytes32)
     {
         require(oracles.length > 0, "Please set oracles and jobIds");
-        Winklink.Request memory request;
+        Victorlink.Request memory request;
         bytes32 requestId;
         uint256 oraclePayment = paymentAmount;
 
         for (uint i = 0; i < oracles.length; i++) {
-            request = buildWinklinkRequest(jobIds[i], this, this.victorlinkCallback.selector);
-            requestId = sendWinklinkRequestTo(oracles[i], request, oraclePayment);
+            request = buildVictorlinkRequest(jobIds[i], this, this.victorlinkCallback.selector);
+            requestId = sendVictorlinkRequestTo(oracles[i], request, oraclePayment);
             requestAnswers[requestId] = answerCounter;
         }
         answers[answerCounter].minimumResponses = minimumResponses;
@@ -1026,15 +1026,15 @@ contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
     }
 
     /**
-     * @notice Receives the answer from the Winklink node.
+     * @notice Receives the answer from the Victorlink node.
      * @dev This function can only be called by the oracle that received the request.
-     * @param _clRequestId The Winklink request ID associated with the answer
-     * @param _response The answer provided by the Winklink node
+     * @param _clRequestId The Victorlink request ID associated with the answer
+     * @param _response The answer provided by the Victorlink node
      */
     function victorlinkCallback(bytes32 _clRequestId, int256 _response)
     external
     {
-        validateWinklinkCallback(_clRequestId);
+        validateVictorlinkCallback(_clRequestId);
 
         uint256 answerId = requestAnswers[_clRequestId];
         delete requestAnswers[_clRequestId];
@@ -1107,10 +1107,10 @@ contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
     }
 
     /**
-     * @notice Cancels an outstanding Winklink request.
+     * @notice Cancels an outstanding Victorlink request.
      * The oracle contract requires the request ID and additional metadata to
      * validate the cancellation. Only old answers can be cancelled.
-     * @param _requestId is the identifier for the Winklink request being cancelled
+     * @param _requestId is the identifier for the Victorlink request being cancelled
      * @param _payment is the amount of LINK paid to the oracle for the request
      * @param _expiration is the time when the request expires
      */
@@ -1129,7 +1129,7 @@ contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
         answers[answerId].responses.push(0);
         deleteAnswer(answerId);
 
-        cancelWinklinkRequest(
+        cancelVictorlinkRequest(
             _requestId,
             _payment,
             this.victorlinkCallback.selector,
@@ -1150,7 +1150,7 @@ contract Aggregator is AggregatorInterface, WinklinkClient, Ownable {
     }
 
     /**
-     * @dev Performs aggregation of the answers received from the Winklink nodes.
+     * @dev Performs aggregation of the answers received from the Victorlink nodes.
      * Assumes that at least half the oracles are honest, which cannot control the
      * middle of the ordered responses.
      * @param _answerId The answer ID associated with the group of requests
