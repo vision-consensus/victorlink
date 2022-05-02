@@ -145,7 +145,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
 
   /**
    * @notice set up the aggregator with initial configuration
-   * @param _win The address of the WIN token
+   * @param _vct The address of the WIN token
    * @param _paymentAmount The amount paid of WIN paid to each oracle per submission, in wei (units of 10⁻¹⁸ WIN)
    * @param _timeout is the number of seconds after the previous round that are
    * allowed to lapse before allowing an oracle to skip an unfinished round
@@ -159,7 +159,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
    * @param _description a short description of what is being reported
    */
   constructor(
-    address _win,
+    address _vct,
     uint128 _paymentAmount,
     uint32 _timeout,
     address _validator,
@@ -168,7 +168,7 @@ contract FluxAggregator is AggregatorInterface, AggregatorV3Interface, Owned {
     uint8 _decimals,
     string memory _description
   ) public {
-    winToken = WinTokenInterface(_win);
+    winToken = WinTokenInterface(_vct);
     updateFutureRounds(_paymentAmount, 0, 0, 0, _timeout);
     setValidator(_validator);
     minSubmissionValue = _minSubmissionValue;

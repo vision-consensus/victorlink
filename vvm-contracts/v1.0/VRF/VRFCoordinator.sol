@@ -28,8 +28,8 @@ contract VRFCoordinator is VRF, VRFRequestIDBase, Owned {
   uint256 constant private EXPECTED_REQUEST_WORDS = 2;
   uint256 constant private MINIMUM_REQUEST_LENGTH = SELECTOR_LENGTH + (32 * EXPECTED_REQUEST_WORDS);
 
-  constructor(address _win, address _victorMid, address _blockHashStore) public {
-    token = VRC20Interface(_win);
+  constructor(address _vct, address _victorMid, address _blockHashStore) public {
+    token = VRC20Interface(_vct);
     victorMid = WinkMid(_victorMid);
     blockHashStore = BlockHashStoreInterface(_blockHashStore);
   }

@@ -177,13 +177,13 @@ abstract contract VRFConsumerBase is VRFRequestIDBase, WinklinkClient {
     }
 
     /**
-     * @param _win The address of the WIN token
+     * @param _vct The address of the WIN token
      * @param _victorMid The address of the WinkMid token
      * @param _vrfCoordinator The address of the VRFCoordinator contract
      * @dev https://docs.chain.link/docs/link-token-contracts
      */
-    constructor(address _vrfCoordinator, address _win, address _victorMid) public {
-        setWinklinkToken(_win);
+    constructor(address _vrfCoordinator, address _vct, address _victorMid) public {
+        setWinklinkToken(_vct);
         setWinkMid(_victorMid);
         vrfCoordinator = _vrfCoordinator;
     }
