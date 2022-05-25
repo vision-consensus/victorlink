@@ -15,7 +15,11 @@ public class Constant {
   public static String FULLNODE_HOST = "infragrid.v.network";
 
   public static void initEnv(String env) {
-    if ("dev".equals(env)) {
+    if ("vtest".equals(env)) {
+      HTTP_EVENT_HOST = "vtest.infragrid.v.network";
+      FULLNODE_HOST = "vtest.infragrid.v.network";
+    }
+    if ("vpioneer".equals(env)) {
       HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
       FULLNODE_HOST = "vpioneer.infragrid.v.network";
     }
