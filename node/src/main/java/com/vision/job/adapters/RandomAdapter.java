@@ -1,13 +1,10 @@
 package com.vision.job.adapters;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.vision.client.EventRequest;
 import com.vision.client.VrfEventRequest;
 import com.vision.common.Constant;
-import com.vision.common.util.AbiUtil;
 import com.vision.common.util.HttpUtil;
 import com.vision.crypto.Proof;
 import com.vision.crypto.SolidityProof;
@@ -18,12 +15,9 @@ import com.vision.web.common.util.JsonUtil;
 import com.vision.web.common.util.R;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.spongycastle.math.ec.ECPoint;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +25,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.vision.common.Constant.*;
-import org.vision.common.crypto.Hash;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.ByteUtil;
-import org.vision.keystore.Wallet;
 import java.util.HashMap;
+import org.vision.keystore.Wallet;
 
 
 @Slf4j

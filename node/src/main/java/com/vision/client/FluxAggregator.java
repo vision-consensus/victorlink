@@ -34,10 +34,10 @@ import org.vision.common.utils.JsonUtil;
 import org.vision.common.utils.Sha256Hash;
 import org.vision.core.capsule.TransactionCapsule;
 import org.vision.protos.Protocol;
-import org.vision.trident.abi.datatypes.Bool;
-import org.vision.trident.abi.datatypes.Int;
-import org.vision.trident.abi.datatypes.Type;
-import org.vision.trident.abi.datatypes.Uint;
+import org.vision.visionjsdk.abi.datatypes.Bool;
+import org.vision.visionjsdk.abi.datatypes.Int;
+import org.vision.visionjsdk.abi.datatypes.Type;
+import org.vision.visionjsdk.abi.datatypes.Uint;
 
 @Slf4j
 public class FluxAggregator {

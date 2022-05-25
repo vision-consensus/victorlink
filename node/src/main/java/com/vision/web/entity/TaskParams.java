@@ -9,7 +9,7 @@ public class TaskParams {
   private Long times;
   private String pair;
   private String pool;
-  private String trc20;
+  private String vrc20;
   private String publicKey;
   private String type;
   private Long version;

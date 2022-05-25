@@ -1,7 +1,6 @@
 package com.vision.job.adapters;
 
 import com.google.common.base.Strings;
-import com.googlecode.cqengine.query.simple.In;
 import com.vision.client.EventRequest;
 import com.vision.client.FluxAggregator;
 import com.vision.client.VrfEventRequest;

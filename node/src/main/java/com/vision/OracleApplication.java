@@ -59,6 +59,7 @@ public class OracleApplication {
 
 		ReSender reSender = new ReSender(JobSubscriber.jobRunner.visionTxService);
 		reSender.run();
+		//com.vision.OracleApplication -k /home/hh/workspace/projects/vision/config/key.store -vrfK /home/hh/workspace/projects/vision/config/vrfKeyStore.yml
 		log.info("==================Victor Link start success================");
 	}
 

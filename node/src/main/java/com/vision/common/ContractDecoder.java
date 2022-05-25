@@ -1,19 +1,19 @@
 package com.vision.common;
 
-import static org.vision.trident.abi.Utils.convert;
+import static org.vision.visionjsdk.abi.Utils.convert;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.vision.trident.abi.FunctionReturnDecoder;
-import org.vision.trident.abi.TypeReference;
-import org.vision.trident.abi.datatypes.Address;
-import org.vision.trident.abi.datatypes.Bool;
-import org.vision.trident.abi.datatypes.Bytes;
-import org.vision.trident.abi.datatypes.Int;
-import org.vision.trident.abi.datatypes.VrcToken;
-import org.vision.trident.abi.datatypes.Type;
-import org.vision.trident.abi.datatypes.Uint;
-import org.vision.trident.abi.datatypes.Utf8String;
+import org.vision.visionjsdk.abi.FunctionReturnDecoder;
+import org.vision.visionjsdk.abi.TypeReference;
+import org.vision.visionjsdk.abi.datatypes.Address;
+import org.vision.visionjsdk.abi.datatypes.Bool;
+import org.vision.visionjsdk.abi.datatypes.Bytes;
+import org.vision.visionjsdk.abi.datatypes.Int;
+import org.vision.visionjsdk.abi.datatypes.VrcToken;
+import org.vision.visionjsdk.abi.datatypes.Type;
+import org.vision.visionjsdk.abi.datatypes.Uint;
+import org.vision.visionjsdk.abi.datatypes.Utf8String;
 
 public class ContractDecoder {
 

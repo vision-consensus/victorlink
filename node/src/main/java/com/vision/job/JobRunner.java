@@ -14,7 +14,6 @@ import com.vision.web.entity.VisionTx;
 import com.vision.web.service.HeadService;
 import com.vision.web.service.JobRunsService;
 import com.vision.web.service.JobSpecsService;
-import com.vision.client.EventRequest;
 import com.vision.web.service.VisionTxService;
 import java.math.BigInteger;
 import java.util.ArrayList;

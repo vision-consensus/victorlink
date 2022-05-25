@@ -6,7 +6,6 @@ import com.google.common.cache.CacheBuilder;
 import com.vision.common.Constant;
 import com.vision.job.adapters.AdapterManager;
 import com.vision.job.adapters.BaseAdapter;
-import com.vision.keystore.KeyStore;
 import com.vision.web.common.util.R;
 import com.vision.web.entity.JobSpec;
 import com.vision.web.entity.TaskSpec;
