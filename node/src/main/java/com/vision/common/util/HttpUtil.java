@@ -117,9 +117,51 @@ public class HttpUtil {
     }
   }
 
+  public static String requestPostWithRetry(String url) throws IOException {
+    CloseableHttpClient client =
+        HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+    try {
+      URI uri = new URI(url);
+      HttpPost httpPost = new HttpPost(uri);
+      httpPost.setHeader("VISION_PRO_API_KEY", Config.getApiKey());
+      HttpResponse response = client.execute(httpPost);
+      if (response == null) {
+        return null;
+      }
+      int status = response.getStatusLine().getStatusCode();
+      if (status == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+        int retry = 1;
+        while (true) {
+          if (retry > HTTP_MAX_RETRY_TIME) {
+            break;
+          }
+          try {
+            Thread.sleep(100 * retry);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          response = client.execute(httpPost);
+          if (response == null) {
+            break;
+          }
+          retry++;
+          status = response.getStatusLine().getStatusCode();
+          if (status != HttpStatus.SC_SERVICE_UNAVAILABLE) {
+            break;
+          }
+        }
+      }
+      return EntityUtils.toString(response.getEntity());
+    } catch (Exception e) {
+      return null;
+    } finally {
+      client.close();
+    }
+  }
+
   public static String requestWithRetry(String url) throws IOException {
     CloseableHttpClient client =
-            HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     try {
       URI uri = new URI(url);
       HttpGet httpGet = new HttpGet(uri);
