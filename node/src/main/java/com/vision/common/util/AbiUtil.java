@@ -40,7 +40,7 @@ public class AbiUtil {
         return new CoderBool();
       case "bytes":
         return new CoderDynamicBytes();
-      case "trcToken":
+      case "vrcToken":
         return new CoderNumber();
       default:
         //System.out.println(type);

@@ -15,7 +15,7 @@ public class AdapterManager {
         adapter = new HttpGetAdapter(params.getGet(), params.getPath());
         break;
       case Constant.TASK_TYPE_HTTP_POST:
-        adapter = null;
+        adapter = new HttpPostAdapter(params.getGet(), params.getPath());
         break;
       case Constant.TASK_TYPE_CONVERT_VS:
         adapter = new ConvertVsAdapter(params.getGet(), params.getPath());
