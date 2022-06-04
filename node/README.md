@@ -39,32 +39,39 @@ More info refers: [Application Property Files](https://docs.spring.io/spring-boo
 curl --location --request POST 'http://localhost:8080/job/specs' \
   --header 'Content-Type: application/json' \
     --data-raw '{
-    "initiators": [
-        {
-        "type": "runlog",
-        "params": {
-            "address": ""
-        }
-        }
-    ],
-    "tasks": [
-        {
-        "type": "httpget",
-        "params": {
-            "get": "https://www.okex.com/api/spot/v3/instruments/TRX-USDT/ticker",
-            "path": "last"
-        }
-        },
-        {
-        "type": "multiply",
-        "params": {
-            "times": 1000000
-        }
-        },
-        {
-        "type": "visiontx"
-        }
-    ]
+      "initiators": [
+          {
+              "type": "runlog",
+              "params": {
+                  "address": ""
+              }
+          }
+      ],
+      "tasks": [
+          {
+              "type": "httpget",
+              "params": {
+                  "get": "https://www.okex.com/api/spot/v3/instruments/TRX-USDT/ticker",
+                  "path": "last"
+              }
+          },
+          {
+              "type": "httppost",
+              "params": {
+                  "get": "https://www.vanswap.org/info/vsPrice",
+                  "path": "result.vsPrice"
+              }
+          },
+          {
+              "type": "multiply",
+              "params": {
+                  "times": 1000000
+              }
+          },
+          {
+              "type": "visiontx"
+          }
+      ]
     }'
 ```
 
