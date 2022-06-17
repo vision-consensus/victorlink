@@ -1,6 +1,5 @@
 package com.vision.client.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
@@ -9,32 +8,38 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventData {
-  @JsonProperty("block_timestamp")
+  @JsonProperty("timeStamp")
   private long blockTimestamp;
 
-  @JsonProperty("contract_address")
+  @JsonProperty("contractAddress")
   private String contractAddress;
 
-  @JsonProperty("event_name")
+  @JsonProperty("eventName")
   private String eventName;
 
-  @JsonProperty("block_number")
+  @JsonProperty("blockNumber")
   private int blockNumber;
 
-  @JsonProperty("event_index")
+  @JsonProperty("eventIndex")
   private int eventIndex;
 
-  @JsonProperty("transaction_id")
+  @JsonProperty("transactionId")
   private String transactionId;
 
-  @JsonProperty("caller_contract_address")
+  @JsonProperty("callerContractAddress")
   private String callerContractAddress;
 
   private Map<String, Object> result;
 
-  @JsonProperty("result_type")
+  @JsonProperty("resultType")
   private Map<String, Object> resultType;
 
   @JsonProperty("_unconfirmed")
   private boolean unconfirmed;
+
+  @JsonProperty("topicMap")
+  private Map<String, Object> topicMap;
+
+  @JsonProperty("dataMap")
+  private Map<String, Object> dataMap;
 }

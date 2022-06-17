@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- dev -->
-    <springProfile name="dev,test">
+    <springProfile name="dev,vtest">
         <logger name="org.springframework.web" level="INFO"/>
         <logger name="org.springboot.sample" level="INFO" />
         <logger name="com.vision" level="DEBUG"/>
     </springProfile>
     <!-- pro -->
-    <springProfile name="prod">
+    <springProfile name="pro">
         <logger name="org.springframework.web" level="ERROR"/>
         <logger name="org.springboot.sample" level="ERROR" />
         <logger name="com.vision" level="ERROR"/>

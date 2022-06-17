@@ -2,11 +2,7 @@ package com.vision.web.service.impl;
 
 import com.vision.common.Constant;
 import com.vision.common.VisionException;
-import com.vision.job.adapters.AdapterManager;
-import com.vision.job.adapters.BaseAdapter;
-import com.vision.job.adapters.HttpGetAdapter;
-import com.vision.job.adapters.VanSwapAdapter;
-import com.vision.job.adapters.MultiplyAdapter;
+import com.vision.job.adapters.*;
 import com.vision.web.common.util.JsonUtil;
 import com.vision.web.entity.Initiator;
 import com.vision.web.entity.InitiatorRequest;
@@ -176,6 +172,14 @@ public class JobSpecsServiceImpl implements JobSpecsService {
         }
         if (((HttpGetAdapter)adapter).getPath() == null || ((HttpGetAdapter)adapter).getPath().isEmpty()) {
           throw new VisionException(Constant.TASK_TYPE_HTTP_GET + " task's path parameter is required");
+        }
+        break;
+      case Constant.TASK_TYPE_HTTP_POST:
+        if (((HttpPostAdapter)adapter).getUrl() == null || ((HttpPostAdapter)adapter).getUrl().isEmpty()) {
+          throw new VisionException(Constant.TASK_TYPE_HTTP_POST + " task's url parameter is required");
+        }
+        if (((HttpPostAdapter)adapter).getPath() == null || ((HttpPostAdapter)adapter).getPath().isEmpty()) {
+          throw new VisionException(Constant.TASK_TYPE_HTTP_POST + " task's path parameter is required");
         }
         break;
       case Constant.TASK_TYPE_MULTIPLY:

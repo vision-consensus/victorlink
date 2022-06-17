@@ -8,11 +8,8 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventResponse {
 
-  private boolean success;
-
-  private EventMeta meta;
-
   private List<EventData> data;
+
 }
 
 

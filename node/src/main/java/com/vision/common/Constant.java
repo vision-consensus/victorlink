@@ -35,6 +35,7 @@ public class Constant {
   public static final String ROUND_STATE_METHOD_SIGN = "oracleRoundState(address,uint32)";
   public static final String ROUND_STATE_RESULT_SIGN = "bool,uint32,int256,uint64,uint64,uint128,uint8,uint128";
 
+
   // task type
   public static final String TASK_TYPE_HTTP_GET = "httpget";
   public static final String TASK_TYPE_HTTP_POST = "httppost";

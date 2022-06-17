@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.spongycastle.util.encoders.Hex;
 import org.vision.common.crypto.Hash;
 import org.vision.common.runtime.vm.DataWord;
+import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.ByteUtil;
 import org.vision.common.utils.Commons;
 
@@ -439,11 +440,13 @@ public class AbiUtil {
 
     @Override
     byte[] encode(String value) {
+
       byte[] address = Commons.decodeFromBase58Check(value);
       if (address == null) {
         return null;
       }
-      return new DataWord(address).getData();
+      String tmp = "00" + ByteArray.toHexString(address).substring(2);
+      return new DataWord(ByteArray.fromHexString(tmp)).getData();
     }
 
     @Override

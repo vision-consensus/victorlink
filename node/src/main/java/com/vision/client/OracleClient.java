@@ -1,6 +1,8 @@
 package com.vision.client;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -36,6 +38,7 @@ import org.apache.commons.codec.DecoderException;
 import org.aspectj.weaver.ast.Or;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.JsonUtil;
@@ -67,7 +70,7 @@ public class OracleClient {
   private static final HashMap<String, String> initiatorEventMap =
       new HashMap<String, String>() {
         {
-          put(INITIATOR_TYPE_RUN_LOG, EVENT_NAME + "," + EVENT_NEW_ROUND); // support multiple events for the same job
+          put(INITIATOR_TYPE_RUN_LOG, EVENT_NEW_ROUND); // support multiple events for the same job
           put(INITIATOR_TYPE_RANDOMNESS_LOG, VRF_EVENT_NAME);
         }
       };
@@ -352,14 +355,15 @@ public class OracleClient {
   private static void processNewRoundEvent(String addr, EventData eventData) {
     long roundId = 0;
     try {
-      roundId = Long.parseLong((String)eventData.getResult().get("roundId"));
+      roundId = Long.parseLong((String)eventData.getTopicMap().get("roundId"));
     } catch (NumberFormatException e) {
       log.warn("parse job failed, roundId: {}", roundId);
       return;
     }
 
-    String startedBy = Tool.convertHexToVisionAddr((String)eventData.getResult().get("startedBy"));
-    long startedAt = Long.parseLong((String)eventData.getResult().get("startedAt"));
+    String startedBy = ByteArray.toHexString(Tool.decodeFromBase58Check((String)eventData.getTopicMap().get("startedBy")));
+
+    long startedAt = Long.parseLong((String)eventData.getDataMap().get("startedAt"));
     if (requestIdsCache.getIfPresent(addr + roundId) != null) {
       log.info("this event has been handled, address:{}, roundId:{}", addr, roundId);
       return;
@@ -400,13 +404,13 @@ public class OracleClient {
     String httpResponse = null;
     String urlPath;
     Map<String, String> params = Maps.newHashMap();
-    if ("nile.visiongrid.io".equals(HTTP_EVENT_HOST)) { // for test
+    if ("vtest.infragrid.v.network".equals(HTTP_EVENT_HOST)) { // for test
       params.put("event_name", filterEvent);
       params.put("order_by", "block_timestamp,asc");
       if(!getMinBlockTimestamp(addr, filterEvent, params)){
         return null;
       }
-      urlPath = String.format("/v1/contracts/%s/events", addr);
+      urlPath = String.format("/eventquery/events/contract/%s/%s", addr, filterEvent);
     } else { // for production
       params.put("event_name", filterEvent);
       params.put("order_by", "block_timestamp,asc");
@@ -414,7 +418,7 @@ public class OracleClient {
       if(!getMinBlockTimestamp(addr, filterEvent, params)){
         return null;
       }
-      urlPath = String.format("/v1/contracts/%s/events", addr);
+      urlPath = String.format("/eventquery/events/contract/%s/%s", addr, filterEvent);
     }
     EventResponse response = null;
     try {
@@ -422,48 +426,63 @@ public class OracleClient {
       if (Strings.isNullOrEmpty(httpResponse)) {
         return null;
       }
-      response = JsonUtil.json2Obj(httpResponse, EventResponse.class);
+      data = json2Obj(httpResponse, EventData.class);
     } catch (IOException e) {
       log.error("parse response failed, err: {}", e.getMessage());
       return data;
     }
-    data.addAll(response.getData());
+//    data.addAll(response.getData());
 
-    boolean isNext = false;
-    Map<String, String> links = response.getMeta().getLinks();
-    if (links == null) {
-      return data;
-    }
-    String urlNext = links.get("next");
-    if (!Strings.isNullOrEmpty(urlNext)) {
-      isNext = true;
-    }
-    while (isNext) {
-      isNext = false;
-      String responseNext = requestNextPage(urlNext);
-      if (Strings.isNullOrEmpty(responseNext)) {
-        return data;
-      }
-      try {
-        response = JsonUtil.json2Obj(responseNext, EventResponse.class);
-      } catch (Exception e) {
-        log.error("parse response failed, err: {}", e.getMessage());
-        return data;
-      }
-      data.addAll(response.getData());
+//    boolean isNext = false;
+//    Map<String, String> links = response.getMeta().getLinks();
+//    if (links == null) {
+//      return data;
+//    }
+//    String urlNext = links.get("next");
+//    if (!Strings.isNullOrEmpty(urlNext)) {
+//      isNext = true;
+//    }
+//    while (isNext) {
+//      isNext = false;
+//      String responseNext = requestNextPage(urlNext);
+//      if (Strings.isNullOrEmpty(responseNext)) {
+//        return data;
+//      }
+//      try {
+//        response = JsonUtil.json2Obj(responseNext, EventResponse.class);
+//      } catch (Exception e) {
+//        log.error("parse response failed, err: {}", e.getMessage());
+//        return data;
+//      }
+//      data.addAll(response.getData());
 
-      links = response.getMeta().getLinks();
-      if (links == null) {
-        return data;
-      }
-      urlNext = links.get("next");
-      if (!Strings.isNullOrEmpty(urlNext)) {
-        isNext = true;
-      }
-    }
+//      links = response.getMeta().getLinks();
+//      if (links == null) {
+//        return data;
+//      }
+//      urlNext = links.get("next");
+//      if (!Strings.isNullOrEmpty(urlNext)) {
+//        isNext = true;
+//      }
+//    }
 
     return data;
   }
+
+  public static final List json2Obj(String jsonString, Class clazz) {
+    if (!StringUtils.isEmpty(jsonString) && clazz != null) {
+      try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(ArrayList.class, clazz);
+        return objectMapper.readValue(jsonString, javaType);
+      } catch (Exception var3) {
+        throw new RuntimeException(var3);
+      }
+    } else {
+      return null;
+    }
+  }
+
   public static String requestNextPage(String urlNext) {
     try {
       String response = HttpUtil.requestWithRetry(urlNext);

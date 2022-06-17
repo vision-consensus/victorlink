@@ -17,6 +17,7 @@ import com.vision.common.AbiUtil;
 import com.vision.common.Config;
 import com.vision.common.ContractDecoder;
 import com.vision.common.util.HttpUtil;
+import com.vision.common.util.Tool;
 import com.vision.keystore.KeyStore;
 import com.vision.web.entity.VisionTx;
 import java.io.IOException;
@@ -78,7 +79,7 @@ public class FluxAggregator {
       params.put("visible",true);
 
       String response = HttpUtil.post("https", FULLNODE_HOST,
-          "/wallet/triggersmartcontract", params);
+          "/wallet/triggerconstantcontract", params);
       ObjectMapper mapper = new ObjectMapper();
       assert response != null;
       Map<String, Object> result = mapper.readValue(response, Map.class);

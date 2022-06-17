@@ -20,4 +20,4 @@ node:
   minPayment: 2
   cacheEnable: true
   minFeeLimit: 50000000
-  visionApiKey: 8ca51978-72aa-4e0e-9263-22ac222b30b5
+  visionApiKey: set_the_proper_apikey
