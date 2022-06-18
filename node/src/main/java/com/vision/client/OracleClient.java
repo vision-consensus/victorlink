@@ -291,15 +291,7 @@ public class OracleClient {
   }
 
   private static void processVrfRequestEvent(String addr, EventData eventData) {
-    String jobId = null;
-    try {
-      jobId = new String(
-          org.apache.commons.codec.binary.Hex.decodeHex(
-              ((String)eventData.getResult().get("jobID"))));
-    } catch (DecoderException e) {
-      log.warn("parse vrf job failed, jobid: {}", jobId);
-      return;
-    }
+    String jobId = String.valueOf(eventData.getTopicMap().get("jobID")).substring(32);
     // match jobId
     if (!listeningAddrs.get(addr).contains(jobId)) {
       log.warn("this node does not support this vrf job, jobid: {}", jobId);
@@ -307,7 +299,7 @@ public class OracleClient {
     }
     // Number/height of the block in which this request appeared
     long blockNum = eventData.getBlockNumber();
-    String requestId = (String) eventData.getResult().get("requestID");
+    String requestId = (String) eventData.getDataMap().get("requestID");
     if (requestIdsCache.getIfPresent(requestId) != null) {
       log.info("this vrf event has been handled, requestid:{}", requestId);
       return;
@@ -325,10 +317,10 @@ public class OracleClient {
     String parentHash = rawHead.getString("parentHash");
     Long blockTimestamp = Long.valueOf(rawHead.getString("timestamp"));
 
-    String sender = Tool.convertHexToVisionAddr((String) eventData.getResult().get("sender"));
-    String keyHash = (String) eventData.getResult().get("keyHash");
-    String seed = (String) eventData.getResult().get("seed");
-    BigInteger fee = new BigInteger((String) eventData.getResult().get("fee"));
+    String sender = (String) eventData.getDataMap().get("sender");
+    String keyHash = (String) eventData.getDataMap().get("keyHash");
+    String seed = (String) eventData.getDataMap().get("seed");
+    BigInteger fee = new BigInteger((String) eventData.getDataMap().get("fee"));
     JobSubscriber.receiveVrfRequest(
         new VrfEventRequest(
             blockNum, blockHash, jobId, keyHash, seed, sender, requestId, fee, addr));

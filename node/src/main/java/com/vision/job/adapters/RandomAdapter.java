@@ -10,6 +10,7 @@ import com.vision.crypto.Proof;
 import com.vision.crypto.SolidityProof;
 import com.vision.crypto.VRF;
 import com.vision.crypto.VRFException;
+import com.vision.keystore.KeyStore;
 import com.vision.keystore.VrfKeyStore;
 import com.vision.web.common.util.JsonUtil;
 import com.vision.web.common.util.R;
@@ -111,7 +112,7 @@ public class RandomAdapter extends BaseAdapter {
     List<Object> parameters = Arrays.asList(requestId);
     String param = com.vision.common.util.AbiUtil.parseParameters("callbacks(bytes32)", parameters);
     Map<String, Object> params = Maps.newHashMap();
-    params.put("owner_address", READONLY_ACCOUNT);
+    params.put("owner_address", KeyStore.getAddr());
     params.put("contract_address", contractAddr);
     params.put("function_selector", "callbacks(bytes32)");
     params.put("parameter", param);

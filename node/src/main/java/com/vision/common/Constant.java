@@ -1,11 +1,13 @@
 package com.vision.common;
 
+import com.vision.keystore.KeyStore;
+
 public class Constant {
 
   public static final long ONE_HOUR = 60 * 60 * 1000L;
   public static final long ONE_MINUTE = 60 * 1000L;
 
-  public static final String READONLY_ACCOUNT = "";
+  public static final String READONLY_ACCOUNT = KeyStore.getAddr();
 
   public static final String TRIGGET_CONSTANT_CONTRACT = "/wallet/triggerconstantcontract";
 
