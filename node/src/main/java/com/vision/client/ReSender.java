@@ -52,12 +52,14 @@ public class ReSender {
   }
 
   private void pollResend() {
+    log.info("pollResend");
     // 1. for inprogress tx, confirmed=VisionTxInProgress
     List<VisionTx> inProgressTxes = visionTxService.getByConfirmedAndDate(VisionTxInProgress,
         System.currentTimeMillis() - RESEND_AFTER_THRESHOLD);
     if(inProgressTxes == null || inProgressTxes.size() == 0) {
       return;
     }
+    System.out.println("inProgressTxes :"+inProgressTxes.size());
     for (VisionTx tx : inProgressTxes) {
       String txId = tx.getSurrogateId();
       String responseStr = getConfirmedTransationInfoById(txId);
@@ -111,6 +113,12 @@ public class ReSender {
           continue;
         }
         log.info("Resending OUT_OF_ENERGY txes id: " + tx.getId());
+        VisionTx resendTx = resendUnconfirmed(tx);
+        if (resendTx != null) {
+          visionTxService.update(resendTx);
+        }
+      } else if ("REVERT".equals(receiptResult)) {
+        log.info("Resending REVERT txes id: " + tx.getId());
         VisionTx resendTx = resendUnconfirmed(tx);
         if (resendTx != null) {
           visionTxService.update(resendTx);
