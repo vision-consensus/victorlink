@@ -117,12 +117,12 @@ public class ReSender {
         if (resendTx != null) {
           visionTxService.update(resendTx);
         }
-      } else if ("REVERT".equals(receiptResult)) {
-        log.info("Resending REVERT txes id: " + tx.getId());
-        VisionTx resendTx = resendUnconfirmed(tx);
-        if (resendTx != null) {
-          visionTxService.update(resendTx);
-        }
+//      } else if ("REVERT".equals(receiptResult)) {
+//        log.info("Resending REVERT txes id: " + tx.getId());
+//        VisionTx resendTx = resendUnconfirmed(tx);
+//        if (resendTx != null) {
+//          visionTxService.update(resendTx);
+//        }
       } else if ("SUCCESS".equals(receiptResult)) {
         tx.setConfirmed(VisionTxConfirmed);
         tx.setUpdatedAt(new Date());
@@ -155,10 +155,41 @@ public class ReSender {
     Map<String, Object> map = Arrays.stream(mapAsString.split(";"))
         .map(entry -> entry.split("="))
         .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
+
+//    try {
+//      String response = HttpUtil.getByUri("https://vtest.infragrid.v.network/wallet/getnowblock");
+//      if (!Strings.isNullOrEmpty(response)) {
+//        try {
+//          JsonElement data = JsonParser.parseString(response);
+//          String[] paths = "block_header.raw_data.number".split("\\.");
+//          for (String key : paths) {
+//            if (data.isJsonArray()) {
+//              data = data.getAsJsonArray().get(Integer.parseInt(key));
+//            } else {
+//              data = data.getAsJsonObject().get(key);
+//            }
+//          }
+//          long value = data.getAsLong();
+//          String parameter = (String)map.get("parameter");
+//          parameter = parameter.substring(0, parameter.length() - 64);
+//          StringBuilder suffix = new StringBuilder(Long.toHexString(value));
+//          while (suffix.length() < 64){
+//            suffix.insert(0, "0");
+//          }
+//          parameter += suffix.toString();
+//          map.put("parameter", parameter);
+//        } catch (Exception e) {
+//          log.error("now block error");
+//        }
+//      }
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+
     return map;
   }
 
-  private static VisionTx resendUnconfirmed(VisionTx tx) {
+  public static VisionTx resendUnconfirmed(VisionTx tx) {
     try {
       String data = tx.getData();
       Map<String, Object> params = convertWithStream(data);
@@ -174,6 +205,7 @@ public class ReSender {
       tx.setConfirmed(VisionTxInProgress);
       return tx;
     } catch (Exception ex) {
+      ex.printStackTrace();
       return null;
     }
   }
