@@ -1,32 +1,27 @@
 package com.vision.job.adapter;
 
-import static com.vision.job.adapters.ContractAdapter.TradePair.BTC_VS;
-import static com.vision.job.adapters.ContractAdapter.TradePair.DICE_VS;
-import static com.vision.job.adapters.ContractAdapter.TradePair.VAN_VS;
-import static com.vision.job.adapters.ContractAdapter.TradePair.SUN_VS;
-import static com.vision.job.adapters.ContractAdapter.TradePair.USDJ_VS;
-import static com.vision.job.adapters.ContractAdapter.TradePair.VCT_VS;
-
 import com.vision.job.adapters.ContractAdapter;
-import java.io.IOException;
-import java.math.BigInteger;
 import org.junit.Test;
+
+import java.math.BigInteger;
+
+import static com.vision.job.adapters.ContractAdapter.TradePair.*;
 
 public class ContractAdapterTest {
 
   @Test
   public void testGetTRXBalance() throws Exception {
     System.out.println(ContractAdapter.getVSBalance(
-            "", true, false));
+        "", true, false));
     System.out.println(ContractAdapter.getVSBalance(
-            "", true, false));
+        "", true, false));
   }
 
   @Test
   public void testGetBalance() throws Exception {
     BigInteger balance = ContractAdapter.balanceOf(
-            "",
-            "");
+        "",
+        "");
     System.out.println(balance.toString());
   }
 

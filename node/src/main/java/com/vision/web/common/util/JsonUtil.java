@@ -2,16 +2,23 @@ package com.vision.web.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import java.util.Map;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
 
 public class JsonUtil {
   public enum JSON_TYPE {
-    /**JSONObject*/
+    /**
+     * JSONObject
+     */
     JSON_TYPE_OBJECT,
-    /**JSONArray*/
+    /**
+     * JSONArray
+     */
     JSON_TYPE_ARRAY,
-    /**不是JSON格式的字符串*/
+    /**
+     * 不是JSON格式的字符串
+     */
     JSON_TYPE_ERROR
   }
 
@@ -23,7 +30,7 @@ public class JsonUtil {
    */
   @SuppressWarnings("unchecked")
   public static final Map<String, Object> json2Map(String jsonString) {
-    if (jsonString == null || jsonString.equals("")){
+    if (jsonString == null || jsonString.equals("")) {
       return null;
     }
     try {
@@ -115,18 +122,19 @@ public class JsonUtil {
 
   /**
    * 获取不同层key的value，例如，获取2层key的value：{"key1":{"key2":"value"}}
+   *
    * @param jsonString
    * @param keys
    * @return
    */
   @SuppressWarnings("rawtypes")
-  public static final Object getValueFromJson(String jsonString, String ... keys){
+  public static final Object getValueFromJson(String jsonString, String... keys) {
     Object object = JsonUtil.json2Obj(jsonString, Map.class);
 
-    for (int i=0; i<keys.length; i++) {
+    for (int i = 0; i < keys.length; i++) {
       if ((object != null) && (object instanceof Map)) {
-        object = ((Map)object).get(keys[i]);
-      }else {
+        object = ((Map) object).get(keys[i]);
+      } else {
         return null;
       }
     }

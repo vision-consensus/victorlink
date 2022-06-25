@@ -1,7 +1,8 @@
 package com.vision.client.message;
 
-import java.math.BigInteger;
 import lombok.Data;
+
+import java.math.BigInteger;
 
 @Data
 public class OracleRoundState {

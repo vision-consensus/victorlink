@@ -23,7 +23,7 @@ public class MultiplyAdapter extends BaseAdapter {
   public R perform(R input) {
     R result = new R();
     try {
-      result.put("result", Math.round((double)input.get("result") * times));
+      result.put("result", Math.round((double) input.get("result") * times));
     } catch (Exception e) {
       result.replace("code", 1);
       result.replace("msg", "multiply failed");

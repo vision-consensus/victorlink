@@ -1,24 +1,18 @@
 package com.vision.job.adapters;
 
 import com.google.common.base.Strings;
-import com.vision.client.EventRequest;
-import com.vision.client.FluxAggregator;
-import com.vision.client.VrfEventRequest;
-import com.vision.client.FulfillRequest;
-import com.vision.client.OracleClient;
+import com.vision.client.*;
 import com.vision.common.Constant;
 import com.vision.web.common.util.JsonUtil;
 import com.vision.web.common.util.R;
 import com.vision.web.entity.VisionTx;
-import java.util.Map;
-import lombok.Getter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.util.EntityUtils;
 import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.Sha256Hash;
 
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -45,17 +39,17 @@ public class VisionTxAdapter extends BaseAdapter {
     try {
       int iLinkType = 0; // oracle:0, vrf:1,
       try {
-        if ("VisionVRF".equals(linkType)){
+        if ("VisionVRF".equals(linkType)) {
           iLinkType = 1;
         }
-      } catch (Exception ex){
+      } catch (Exception ex) {
         log.error("no type info for visiontx :" + ex.getMessage());
       }
       switch (iLinkType) {
         case 0:
           VisionTx tx = new VisionTx();
           if (ver == null || ver == 1) {
-            EventRequest event = JsonUtil.fromJson((String)input.get("params"), EventRequest.class);
+            EventRequest event = JsonUtil.fromJson((String) input.get("params"), EventRequest.class);
             FulfillRequest fulfillRequest = new FulfillRequest(
                 event.getContractAddr(),
                 event.getRequestId(),
@@ -63,29 +57,29 @@ public class VisionTxAdapter extends BaseAdapter {
                 event.getCallbackAddr(),
                 event.getCallbackFunctionId(),
                 event.getCancelExpiration(),
-                codecData((long)input.get("result")));
+                codecData((long) input.get("result")));
             //Long.toString((long)input.get("result")));
             //(Long) input.get("result"));
 
             OracleClient.fulfil(fulfillRequest, tx);
           } else {
-            Map<String, Object> params = JsonUtil.json2Map((String)input.get("params"));
+            Map<String, Object> params = JsonUtil.json2Map((String) input.get("params"));
             long roundId = Long.parseLong(params.get("roundId").toString());
             String addr = String.valueOf(params.get("address"));
 
-            FluxAggregator.submit(addr, roundId, (long)input.get("result"), tx);
+            FluxAggregator.submit(addr, roundId, (long) input.get("result"), tx);
           }
 
-          tx.setValue((long)input.get("result"));
+          tx.setValue((long) input.get("result"));
           tx.setSentAt(System.currentTimeMillis());
-          tx.setTaskRunId((String)input.get("taskRunId"));
+          tx.setTaskRunId((String) input.get("taskRunId"));
           //tx.setConfirmed(Constant.VisionTxInProgress); // do not resend for oracle request
           log.info("tx id : " + tx.getSurrogateId());
 
           return R.ok().put("result", tx.getSurrogateId()).put("tx", tx);
         case 1:
-          String proof = (String)input.get("result");
-          VrfEventRequest vrfEvent = JsonUtil.fromJson((String)input.get("params"), VrfEventRequest.class);
+          String proof = (String) input.get("result");
+          VrfEventRequest vrfEvent = JsonUtil.fromJson((String) input.get("params"), VrfEventRequest.class);
           FulfillRequest vrfFulfillRequest = new FulfillRequest(
               vrfEvent.getContractAddr(),
               vrfEvent.getRequestId(),
@@ -96,7 +90,7 @@ public class VisionTxAdapter extends BaseAdapter {
               proof);
 
           VisionTx vrfTx = new VisionTx();
-          try{
+          try {
             OracleClient.vrfFulfil(vrfFulfillRequest, vrfTx);
           } catch (Exception ex) { // catch http exception for next VRF resend
             if (Strings.isNullOrEmpty(vrfTx.getSurrogateId())) {
@@ -110,7 +104,7 @@ public class VisionTxAdapter extends BaseAdapter {
             }
             vrfTx.setValue(0L);
             vrfTx.setSentAt(System.currentTimeMillis());
-            vrfTx.setTaskRunId((String)input.get("taskRunId"));
+            vrfTx.setTaskRunId((String) input.get("taskRunId"));
             vrfTx.setConfirmed(Constant.VisionTxInProgress);
             log.info("vrfFulFil exception vrfTx id : " + vrfTx.getSurrogateId());
             return R.error(1, "vrf fulfillRequest failed")
@@ -118,7 +112,7 @@ public class VisionTxAdapter extends BaseAdapter {
           }
           vrfTx.setValue(0L);
           vrfTx.setSentAt(System.currentTimeMillis());
-          vrfTx.setTaskRunId((String)input.get("taskRunId"));
+          vrfTx.setTaskRunId((String) input.get("taskRunId"));
           vrfTx.setConfirmed(Constant.VisionTxInProgress);
           log.info("vrfTx id : " + vrfTx.getSurrogateId());
 
@@ -135,10 +129,10 @@ public class VisionTxAdapter extends BaseAdapter {
 
   }
 
-  private String getRandomHexString(int numchars){
+  private String getRandomHexString(int numchars) {
     Random r = new Random();
     StringBuffer sb = new StringBuffer();
-    while(sb.length() < numchars){
+    while (sb.length() < numchars) {
       sb.append(Integer.toHexString(r.nextInt()));
     }
 
@@ -148,7 +142,7 @@ public class VisionTxAdapter extends BaseAdapter {
   private String codecData(long data) {
     String base = "0000000000000000000000000000000000000000000000000000000000000000";
     String dataHexStr = Long.toHexString(data);
-    int sub = base.length()-dataHexStr.length();
+    int sub = base.length() - dataHexStr.length();
     if (sub < 0) {
       log.error("data is too large");
       return "";

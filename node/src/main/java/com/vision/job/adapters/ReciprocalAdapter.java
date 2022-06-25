@@ -14,8 +14,8 @@ public class ReciprocalAdapter extends BaseAdapter {
   @Override
   public R perform(R input) {
     R result = new R();
-    try{
-      result.put("result", (double)1/(double)input.get("result"));
+    try {
+      result.put("result", (double) 1 / (double) input.get("result"));
     } catch (Exception e) {
       result.replace("code", 1);
       result.replace("msg", "reciprocal failed");

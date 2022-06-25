@@ -18,19 +18,15 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.spongycastle.math.ec.ECPoint;
 import org.spongycastle.util.encoders.Hex;
-
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.vision.common.Constant.*;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.ByteUtil;
-import java.util.HashMap;
 import org.vision.keystore.Wallet;
+
+import java.math.BigInteger;
+import java.util.*;
+
+import static com.vision.common.Constant.*;
 
 
 @Slf4j
@@ -54,7 +50,7 @@ public class RandomAdapter extends BaseAdapter {
   public R perform(R input) {
     R result = new R();
     try {
-      VrfEventRequest event = JsonUtil.fromJson((String)input.get("params"), VrfEventRequest.class);
+      VrfEventRequest event = JsonUtil.fromJson((String) input.get("params"), VrfEventRequest.class);
       String coordinatorAddress = event.getContractAddr();
 
       // 1. checkFulfillment
@@ -83,7 +79,7 @@ public class RandomAdapter extends BaseAdapter {
       // ChainLink save the public key & private both in memory and db.
       HashMap<String, String> vrkKeyMap = VrfKeyStore.getVrfKeyMap();
       String privateKey = vrkKeyMap.get(strPublicKey);
-      if(Strings.isNullOrEmpty(privateKey)) {
+      if (Strings.isNullOrEmpty(privateKey)) {
         log.error("cannot find the private key for:{}", strPublicKey);
         throw new RuntimeException("cannot find the private key for " + strPublicKey);
       }
@@ -131,14 +127,14 @@ public class RandomAdapter extends BaseAdapter {
     ObjectMapper mapper = new ObjectMapper();
     assert response != null;
     Map<String, Object> result = mapper.readValue(response, Map.class);
-    boolean flag = Optional.ofNullable((List<String>)result.get("constant_result"))
-            .map(constantResult -> constantResult.get(0))
-            .map(str -> str.substring(128)) //seedAndBlockNum is the third element in the `Callback` struct.
-            .map(Hex::decode)
-            .map(Hex::toHexString)
-            .map(str -> new BigInteger(str, 16))
-            .map(value -> (value != null && !value.equals(BigInteger.ZERO)))
-            .orElseThrow(() -> new IllegalArgumentException("can not get the callbacks, contract:" + contractAddr));
+    boolean flag = Optional.ofNullable((List<String>) result.get("constant_result"))
+        .map(constantResult -> constantResult.get(0))
+        .map(str -> str.substring(128)) //seedAndBlockNum is the third element in the `Callback` struct.
+        .map(Hex::decode)
+        .map(Hex::toHexString)
+        .map(str -> new BigInteger(str, 16))
+        .map(value -> (value != null && !value.equals(BigInteger.ZERO)))
+        .orElseThrow(() -> new IllegalArgumentException("can not get the callbacks, contract:" + contractAddr));
 
     return flag;
   }
@@ -190,9 +186,9 @@ public class RandomAdapter extends BaseAdapter {
     System.arraycopy(marshaledProof, 0, beforeSeed, 0, 192);
     System.arraycopy(marshaledProof, 224, afterSeed, 0, 192);
     byte[] solidityProofResponse = ByteUtil.merge(
-            beforeSeed, preSeedBytes, afterSeed, ByteUtil.longTo32Bytes(blockNum));
+        beforeSeed, preSeedBytes, afterSeed, ByteUtil.longTo32Bytes(blockNum));
 
-    if (solidityProofResponse.length != vrf.ProofLength+32) {
+    if (solidityProofResponse.length != vrf.ProofLength + 32) {
       return null;
     }
 
@@ -220,8 +216,8 @@ public class RandomAdapter extends BaseAdapter {
   // instead.
   private String generateProofWithNonce(String priKey, byte[] seed, BigInteger nonce) {
     BigInteger priVal = new BigInteger(priKey, 16);
-    BigInteger seedVal = new BigInteger(Hex.toHexString(seed),16);
-    if(!(priVal.compareTo(groupOrder) == -1 && seedVal.compareTo(groupOrder) == -1)){
+    BigInteger seedVal = new BigInteger(Hex.toHexString(seed), 16);
+    if (!(priVal.compareTo(groupOrder) == -1 && seedVal.compareTo(groupOrder) == -1)) {
       log.error("badly-formatted key or seed");
     }
     ECPoint pubKey = ECKey.CURVE_SPEC.getG().multiply(priVal);

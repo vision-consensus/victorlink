@@ -4,15 +4,11 @@ import com.vision.web.common.ResultStatus;
 import com.vision.web.common.util.R;
 import com.vision.web.entity.JobRun;
 import com.vision.web.service.JobRunsService;
-import java.util.List;
-import javax.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,7 +23,7 @@ public class JobRunsController {
       @RequestParam(required = false, defaultValue = "") String id,
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size
-      ) {
+  ) {
     try {
       List<JobRun> jobRuns;
       long totalCount;

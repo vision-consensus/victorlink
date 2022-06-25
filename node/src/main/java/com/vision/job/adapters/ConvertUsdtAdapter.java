@@ -3,8 +3,9 @@ package com.vision.job.adapters;
 import com.vision.common.Constant;
 import com.vision.job.adapters.ContractAdapter.TradePair;
 import com.vision.web.common.util.R;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 
 @Slf4j
 public class ConvertUsdtAdapter extends BaseAdapter {
@@ -23,7 +24,7 @@ public class ConvertUsdtAdapter extends BaseAdapter {
         result.replace("msg", "convert USDT failed");
         log.info("convert USDT failed");
       } else {
-        double price = 1/value * (double)input.get("result");
+        double price = 1 / value * (double) input.get("result");
         result.put("result", price);
       }
     } catch (IOException e) {

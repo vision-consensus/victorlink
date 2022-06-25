@@ -1,12 +1,6 @@
 package com.vision.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.spongycastle.util.encoders.Hex;
 import org.vision.common.crypto.Hash;
@@ -14,6 +8,13 @@ import org.vision.common.runtime.vm.DataWord;
 import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.ByteUtil;
 import org.vision.common.utils.Commons;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AbiUtil {
 
@@ -163,7 +164,7 @@ public class AbiUtil {
         offset += 32;
 
         System.arraycopy(encodedList.get(idx), 0, data, dynamicOffset,
-                encodedList.get(idx).length);
+            encodedList.get(idx).length);
         dynamicOffset += encodedList.get(idx).length;
       } else {
         System.arraycopy(encodedList.get(idx), 0, data, offset, encodedList.get(idx).length);
@@ -205,7 +206,7 @@ public class AbiUtil {
         inputArr[i++] = "[" + sb.toString() + "]";
       } else {
         inputArr[i++] =
-                (parameter instanceof String) ? ("\"" + parameter + "\"") : ("" + parameter);
+            (parameter instanceof String) ? ("\"" + parameter + "\"") : ("" + parameter);
       }
     }
     String input = StringUtils.join(inputArr, ',');
@@ -258,14 +259,14 @@ public class AbiUtil {
 
     String method1 = "test(uint256,string,string,uint256[])";
     String expected1 = "db103cf30000000000000000000000000000000000000000000000000000000000000005000"
-            + "0000000000000000000000000000000000000000000000000000000000080000000000000000000000000000"
-            + "00000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000"
-            + "0000000000100000000000000000000000000000000000000000000000000000000000000000142000000000"
-            + "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-            + "0000000000000000000000000000143000000000000000000000000000000000000000000000000000000000"
-            + "0000000000000000000000000000000000000000000000000000000000000000000030000000000000000000"
-            + "0000000000000000000000000000000000000000000010000000000000000000000000000000000000000000"
-            + "0000000000000000000020000000000000000000000000000000000000000000000000000000000000003";
+        + "0000000000000000000000000000000000000000000000000000000000080000000000000000000000000000"
+        + "00000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000"
+        + "0000000000100000000000000000000000000000000000000000000000000000000000000000142000000000"
+        + "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        + "0000000000000000000000000000143000000000000000000000000000000000000000000000000000000000"
+        + "0000000000000000000000000000000000000000000000000000000000000000000030000000000000000000"
+        + "0000000000000000000000000000000000000000000010000000000000000000000000000000000000000000"
+        + "0000000000000000000020000000000000000000000000000000000000000000000000000000000000003";
     String method2 = "test(uint256,string,string,uint256[3])";
     String listString = "1 ,\"B\",\"C\", [1, 2, 3]";
     System.out.println(parseMethod(method1, listString));

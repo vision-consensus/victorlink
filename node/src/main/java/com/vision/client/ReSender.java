@@ -2,7 +2,6 @@ package com.vision.client;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.vision.client.message.TriggerResponse;
 import com.vision.common.Config;
 import com.vision.common.util.HttpUtil;
 import com.vision.job.adapters.ContractAdapter;
@@ -10,11 +9,12 @@ import com.vision.keystore.KeyStore;
 import com.vision.web.entity.VisionTx;
 import com.vision.web.service.VisionTxService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,17 +22,20 @@ import java.util.stream.Collectors;
 
 import static com.vision.common.Constant.*;
 
-/** Subscribe the events of the oracle contracts and reply. */
+/**
+ * Subscribe the events of the oracle contracts and reply.
+ */
 @Slf4j
 public class ReSender {
 
   @Autowired
   private VisionTxService visionTxService;
+
   public ReSender(VisionTxService _visionTxService) {
     visionTxService = _visionTxService;
   }
 
-  private static final long RESEND_AFTER_THRESHOLD = 100_000L ; // 100 Second
+  private static final long RESEND_AFTER_THRESHOLD = 100_000L; // 100 Second
 
 
   private ScheduledExecutorService listenExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -56,14 +59,14 @@ public class ReSender {
     // 1. for inprogress tx, confirmed=VisionTxInProgress
     List<VisionTx> inProgressTxes = visionTxService.getByConfirmedAndDate(VisionTxInProgress,
         System.currentTimeMillis() - RESEND_AFTER_THRESHOLD);
-    if(inProgressTxes == null || inProgressTxes.size() == 0) {
+    if (inProgressTxes == null || inProgressTxes.size() == 0) {
       return;
     }
-    System.out.println("inProgressTxes :"+inProgressTxes.size());
+    System.out.println("inProgressTxes :" + inProgressTxes.size());
     for (VisionTx tx : inProgressTxes) {
       String txId = tx.getSurrogateId();
       String responseStr = getConfirmedTransationInfoById(txId);
-      if("{}\n".equals(responseStr)) { // cannot find the tx
+      if ("{}\n".equals(responseStr)) { // cannot find the tx
         long nodeBalance = 0L;
         try {
           nodeBalance = ContractAdapter.getVSBalance(KeyStore.getAddr(), true, true);
@@ -135,14 +138,16 @@ public class ReSender {
     }
   }
 
-  /** constructor. */
+  /**
+   * constructor.
+   */
   public static String getConfirmedTransationInfoById(String txId) {
     try {
       Map<String, Object> params = Maps.newHashMap();
       params.put("value", txId);
       params.put("visible", true);
       String response =
-              HttpUtil.post("https", FULLNODE_HOST, "/walletsolidity/gettransactioninfobyid", params);
+          HttpUtil.post("https", FULLNODE_HOST, "/walletsolidity/gettransactioninfobyid", params);
 
       return response;
     } catch (Exception e) {

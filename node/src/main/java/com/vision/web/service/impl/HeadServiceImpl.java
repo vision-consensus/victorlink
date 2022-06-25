@@ -6,6 +6,7 @@ import com.vision.web.service.HeadService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Lazy
@@ -17,7 +18,10 @@ public class HeadServiceImpl implements HeadService {
   public int insert(Head head) {
     return headMapper.insert(head);
   }
-  public int update(Head head) { return headMapper.update(head); }
+
+  public int update(Head head) {
+    return headMapper.update(head);
+  }
 
   @Override
   public List<Head> getByAddress(String address) {

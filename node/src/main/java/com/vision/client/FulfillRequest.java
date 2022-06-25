@@ -1,10 +1,11 @@
 package com.vision.client;
 
 import com.google.common.collect.Lists;
-import java.math.BigInteger;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.math.BigInteger;
+import java.util.List;
 
 @Data
 @AllArgsConstructor

@@ -1,6 +1,5 @@
 package com.vision.job;
 
-import com.vision.job.adapters.ConvertUsdAdapter;
 import com.vision.job.adapters.HttpGetAdapter;
 import com.vision.web.common.util.R;
 import org.junit.Test;

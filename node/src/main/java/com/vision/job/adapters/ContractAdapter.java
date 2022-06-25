@@ -1,14 +1,12 @@
 package com.vision.job.adapters;
 
-import static com.vision.common.Constant.HTTP_EVENT_HOST;
-import static com.vision.common.Constant.VS_DECIMAL_STR;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.vision.common.Constant;
 import com.vision.common.util.AbiUtil;
 import com.vision.common.util.HttpUtil;
-import java.io.IOException;
+import org.spongycastle.util.encoders.Hex;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -16,9 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
-import org.spongycastle.util.encoders.Hex;
+
+import static com.vision.common.Constant.VS_DECIMAL_STR;
 
 public class ContractAdapter {
 
@@ -48,13 +45,13 @@ public class ContractAdapter {
     assert response != null;
     Map<String, Object> result = mapper.readValue(response, Map.class);
     return Optional.ofNullable(result.get("balance"))
-            .map(balance -> {
-              if (balance instanceof Integer) {
-                return ((Integer) balance).longValue();
-              }
-              return (long)balance;
-            })
-            .orElse(0L);
+        .map(balance -> {
+          if (balance instanceof Integer) {
+            return ((Integer) balance).longValue();
+          }
+          return (long) balance;
+        })
+        .orElse(0L);
   }
 
   public static BigInteger balanceOf(String ownerAddress, String contractAddress) throws Exception {
@@ -73,16 +70,16 @@ public class ContractAdapter {
     params.put("parameter", param);
     params.put("visible", visible);
     String response = HttpUtil.post(
-            "https", VISIONGRID_HOST, TRIGGET_CONSTANT, params);
+        "https", VISIONGRID_HOST, TRIGGET_CONSTANT, params);
     ObjectMapper mapper = new ObjectMapper();
     assert response != null;
     Map<String, Object> result = mapper.readValue(response, Map.class);
-    return Optional.ofNullable((List<String>)result.get("constant_result"))
-            .map(constantResult -> constantResult.get(0))
-            .map(Hex::decode)
-            .map(Hex::toHexString)
-            .map(str -> new BigInteger(str, 16))
-            .orElse(new BigInteger("0"));
+    return Optional.ofNullable((List<String>) result.get("constant_result"))
+        .map(constantResult -> constantResult.get(0))
+        .map(Hex::decode)
+        .map(Hex::toHexString)
+        .map(str -> new BigInteger(str, 16))
+        .orElse(new BigInteger("0"));
   }
 
   public static int getDecimal(String contractAddress) throws Exception {
@@ -101,17 +98,17 @@ public class ContractAdapter {
     params.put("parameter", param);
     params.put("visible", visible);
     String response = HttpUtil.post(
-            "https", VISIONGRID_HOST, TRIGGET_CONSTANT, params);
+        "https", VISIONGRID_HOST, TRIGGET_CONSTANT, params);
     ObjectMapper mapper = new ObjectMapper();
     assert response != null;
     Map<String, Object> result = mapper.readValue(response, Map.class);
-    return Optional.ofNullable((List<String>)result.get("constant_result"))
-            .map(constantResult -> constantResult.get(0))
-            .map(Hex::decode)
-            .map(Hex::toHexString)
-            .map(str -> new BigInteger(str, 16))
-            .map(BigInteger::intValue)
-            .orElse(0);
+    return Optional.ofNullable((List<String>) result.get("constant_result"))
+        .map(constantResult -> constantResult.get(0))
+        .map(Hex::decode)
+        .map(Hex::toHexString)
+        .map(str -> new BigInteger(str, 16))
+        .map(BigInteger::intValue)
+        .orElse(0);
   }
 
   // todo 1. rename  2. check handle exception when blance is 0

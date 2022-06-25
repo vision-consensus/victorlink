@@ -1,10 +1,11 @@
 package com.vision.crypto;
 
-import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.spongycastle.math.ec.ECPoint;
 import org.vision.common.utils.ByteArray;
+
+import java.math.BigInteger;
 
 @AllArgsConstructor
 public class SolidityProof {

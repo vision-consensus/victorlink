@@ -10,12 +10,12 @@ privateKey:
 feelimit: 40000000
 
 pairs:
-  - {name: VS-USD,  contract: @{contract address}, deviation: 10, updateInterval: 10800000}
+  - { name: VS-USD,  contract: @{ contract address }, deviation: 10, updateInterval: 10800000 }
 
 
 nodeServer:
-  - {host: @{ip}, port: @{port} }
+  - { host: @{ ip }, port: @{ port } }
 
 jobs:
   VS-USD:
-    - @{jobid}
+    - @{ jobid }

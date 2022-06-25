@@ -5,17 +5,15 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.vision.client.message.BroadCastResponse;
 import com.vision.client.message.Transaction;
 import com.vision.client.message.TriggerResponse;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.spongycastle.util.encoders.Hex;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.utils.*;
 import org.vision.protos.Protocol;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Tool {
 
@@ -41,8 +39,10 @@ public class Tool {
     }
     return address;
   }
+
   private static final int ADDRESS_SIZE = 21;
   private static final byte ADD_PRE_FIX_BYTE = (byte) 0x46;
+
   public static boolean addressValid(byte[] address) {
     if (address == null || address.length == 0) {
       System.out.println("Warning: Address is empty !!");
@@ -83,8 +83,9 @@ public class Tool {
     }
     return null;
   }
+
   public static BroadCastResponse triggerContract(ECKey key, Map<String, Object> params, String schema, String api)
-          throws IOException, URISyntaxException {
+      throws IOException, URISyntaxException {
     String response = HttpUtil.post(schema, api, "/wallet/triggersmartcontract", params);
     TriggerResponse triggerResponse = JsonUtil.json2Obj(response, TriggerResponse.class);
     //
@@ -92,7 +93,7 @@ public class Tool {
   }
 
   public static BroadCastResponse triggerContract(ECKey key, Map<String, Object> params, String api)
-          throws IOException, URISyntaxException {
+      throws IOException, URISyntaxException {
     String response = HttpUtil.post("https", api, "/wallet/triggersmartcontract", params);
     TriggerResponse triggerResponse = JsonUtil.json2Obj(response, TriggerResponse.class);
     //
@@ -100,7 +101,7 @@ public class Tool {
   }
 
   public static org.vision.protos.Protocol.Transaction signTransaction(Transaction transaction,
-      ECKey key) throws InvalidProtocolBufferException {
+                                                                       ECKey key) throws InvalidProtocolBufferException {
     String rawDataHex = transaction.getRawDataHex();
     Protocol.Transaction.raw raw = Protocol.Transaction.raw
         .parseFrom(ByteArray.fromHexString(rawDataHex));
@@ -111,7 +112,7 @@ public class Tool {
   }
 
   public static BroadCastResponse broadcastHex(String schema, String api,
-      org.vision.protos.Protocol.Transaction transaction) throws IOException, URISyntaxException {
+                                               org.vision.protos.Protocol.Transaction transaction) throws IOException, URISyntaxException {
     Map<String, Object> params = new HashMap<>();
     params.put("transaction", Hex.toHexString(transaction.toByteArray()));
     String response = HttpUtil.post(schema, api, "/wallet/broadcasthex", params);

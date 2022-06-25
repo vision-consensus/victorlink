@@ -1,9 +1,5 @@
 package com.vision.user;
 
-import static com.vision.common.Constant.FULLNODE_HOST;
-import static com.vision.common.Constant.READONLY_ACCOUNT;
-import static com.vision.common.Constant.TRIGGET_CONSTANT_CONTRACT;
-
 import com.alibaba.fastjson.JSONObject;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -17,6 +13,10 @@ import com.vision.client.message.BroadCastResponse;
 import com.vision.common.util.AbiUtil;
 import com.vision.common.util.HttpUtil;
 import com.vision.common.util.Tool;
+import lombok.extern.slf4j.Slf4j;
+import org.vision.common.crypto.ECKey;
+import org.vision.common.utils.ByteArray;
+import org.vision.common.utils.StringUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,10 +24,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.*;
 
-import lombok.extern.slf4j.Slf4j;
-import org.vision.common.crypto.ECKey;
-import org.vision.common.utils.ByteArray;
-import org.vision.common.utils.StringUtil;
+import static com.vision.common.Constant.*;
 
 @Slf4j
 public class CheckDeviation {

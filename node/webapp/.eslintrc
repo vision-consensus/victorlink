@@ -2,9 +2,13 @@
   "extends": "react-app",
   "env": {
     "amd": true
-},
+  },
   "rules": {
     "import/no-webpack-loader-syntax": "off",
-    "no-restricted-globals": ["error", "event", "fdescribe"]
+    "no-restricted-globals": [
+      "error",
+      "event",
+      "fdescribe"
+    ]
   }
 }

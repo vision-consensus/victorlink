@@ -6,12 +6,10 @@ import com.google.gson.JsonParser;
 import com.vision.common.Constant;
 import com.vision.common.util.HttpUtil;
 import com.vision.web.common.util.R;
-import java.io.IOException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
 
 @Slf4j
 public class ConvertVsAdapter extends BaseAdapter {
@@ -25,6 +23,7 @@ public class ConvertVsAdapter extends BaseAdapter {
     url = urlStr;
     path = pathStr;
   }
+
   @Override
   public String taskType() {
     return Constant.TASK_TYPE_CONVERT_VS;
@@ -32,7 +31,7 @@ public class ConvertVsAdapter extends BaseAdapter {
 
   @Override
   public R perform(R input) {
-    R result  = new R();
+    R result = new R();
     String response = null;
     try {
       response = HttpUtil.requestWithRetry(url);

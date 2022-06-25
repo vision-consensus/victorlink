@@ -2,8 +2,9 @@ package com.vision.client.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Map;
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

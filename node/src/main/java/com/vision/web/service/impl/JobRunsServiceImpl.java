@@ -7,12 +7,13 @@ import com.vision.web.mapper.JobRunsMapper;
 import com.vision.web.mapper.TaskRunsMapper;
 import com.vision.web.mapper.TaskSpecsMapper;
 import com.vision.web.service.JobRunsService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Lazy
 @Service

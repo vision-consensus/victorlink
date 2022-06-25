@@ -1,15 +1,7 @@
 package com.vision.common.util;
 
-import static com.vision.common.Constant.HTTP_MAX_RETRY_TIME;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vision.common.Config;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -24,32 +16,41 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.vision.common.Constant.HTTP_MAX_RETRY_TIME;
+
 public class HttpUtil {
 
   private static RequestConfig requestConfig = RequestConfig.custom()
-          .setSocketTimeout(5000).setConnectTimeout(5000).build();
+      .setSocketTimeout(5000).setConnectTimeout(5000).build();
   private static CloseableHttpClient client =
-          HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+      HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
 
   public static String get(String scheme, String host, String path, Map<String, String> paramMap) throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     paramMap.keySet().forEach(
-            k -> {
-              params.add(new BasicNameValuePair(k, paramMap.get(k)));
-            }
+        k -> {
+          params.add(new BasicNameValuePair(k, paramMap.get(k)));
+        }
     );
     URI uri = null;
     try {
       uri = new URIBuilder().setScheme(scheme).setHost(host).setPath(path)
-              .setParameters(params)
-              .build();
+          .setParameters(params)
+          .build();
     } catch (URISyntaxException e) {
       e.printStackTrace();
       return null;
     }
 
     CloseableHttpClient client =
-            HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     HttpGet httpGet = new HttpGet(uri);
     httpGet.setHeader("VISION_PRO_API_KEY", Config.getApiKey());
     try (CloseableHttpResponse response = client.execute(httpGet)) {
@@ -69,17 +70,17 @@ public class HttpUtil {
     URI uri = null;
     try {
       uri = new URIBuilder()
-              .setScheme(scheme)
-              .setHost(host)
-              .setPath(path)
-              .build();
+          .setScheme(scheme)
+          .setHost(host)
+          .setPath(path)
+          .build();
     } catch (URISyntaxException e) {
       e.printStackTrace();
       throw e;
     }
 
     CloseableHttpClient client =
-            HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     HttpPost httpPost = new HttpPost(uri);
     httpPost.setEntity(entity);
     httpPost.setHeader("Content-Type", "application/json;charset=utf8");

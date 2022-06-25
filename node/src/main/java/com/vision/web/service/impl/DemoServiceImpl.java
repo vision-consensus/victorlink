@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class DemoServiceImpl implements DemoService {
-    private DemoMapper demoMapper;
+  private DemoMapper demoMapper;
 
-    @Override
-    public int create(Demo demo) {
-        return demoMapper.create(demo);
-    }
+  @Override
+  public int create(Demo demo) {
+    return demoMapper.create(demo);
+  }
 
-    @Override
-    public Demo queryByKey(String key) {
-        return demoMapper.queryByKey(key);
-    }
+  @Override
+  public Demo queryByKey(String key) {
+    return demoMapper.queryByKey(key);
+  }
 
 }

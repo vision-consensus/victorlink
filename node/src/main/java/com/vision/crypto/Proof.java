@@ -1,10 +1,11 @@
 package com.vision.crypto;
 
-import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.spongycastle.math.ec.ECPoint;
 import org.spongycastle.util.BigIntegers;
+
+import java.math.BigInteger;
 
 /**
  * Proof represents a proof that Gamma was constructed from the Seed

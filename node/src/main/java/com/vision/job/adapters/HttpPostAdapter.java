@@ -31,7 +31,7 @@ public class HttpPostAdapter extends BaseAdapter {
 
   @Override
   public R perform(R input) {
-    R result  = new R();
+    R result = new R();
     String response = null;
     try {
       response = HttpUtil.requestPostWithRetry(url);

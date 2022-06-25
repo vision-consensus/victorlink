@@ -5,24 +5,23 @@ import {routerMiddleware, routerReducer} from 'react-router-redux'
 import {createHashHistory} from 'history'
 
 export const reduxHistory = createHashHistory({
-  hashType: 'slash',
+    hashType: 'slash',
 });
 
 export function configureStore() {
-  const enhancer = compose(
-      applyMiddleware(
-          thunk,
-          routerMiddleware(reduxHistory)
-      ),
+    const enhancer = compose(
+        applyMiddleware(
+            thunk,
+            routerMiddleware(reduxHistory)
+        ),
+    );
 
-  );
-
-  return createStore(
-      combineReducers({
-        ...reducers,
-        router: routerReducer,
-      }),
-      enhancer);
+    return createStore(
+        combineReducers({
+            ...reducers,
+            router: routerReducer,
+        }),
+        enhancer);
 }
 
 export const store = configureStore();

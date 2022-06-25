@@ -3,10 +3,11 @@ package com.vision.client;
 import com.vision.client.message.OracleRoundState;
 import com.vision.common.Constant;
 import com.vision.keystore.KeyStore;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class FluxAggregatorTest {
 

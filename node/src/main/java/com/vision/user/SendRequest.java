@@ -1,9 +1,5 @@
 package com.vision.user;
 
-import static com.vision.common.Constant.FULLNODE_HOST;
-import static com.vision.common.Constant.READONLY_ACCOUNT;
-import static com.vision.common.Constant.TRIGGET_CONSTANT_CONTRACT;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -14,20 +10,16 @@ import com.vision.client.message.BroadCastResponse;
 import com.vision.common.util.AbiUtil;
 import com.vision.common.util.HttpUtil;
 import com.vision.common.util.Tool;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.util.EntityUtils;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.utils.ByteArray;
 import org.vision.common.utils.StringUtil;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.*;
+
+import static com.vision.common.Constant.*;
 
 /**
  * will be replaced by class {CheckDeviation}
@@ -76,8 +68,8 @@ public class SendRequest {
       if (Strings.isNullOrEmpty(response)) {
         JsonObject data = (JsonObject) JsonParser.parseString(response);
         return data.getAsJsonPrimitive("data").getAsLong();
-      }else {
-        System.out.println("[alarm]getPrice fail. jobId="+jobId);
+      } else {
+        System.out.println("[alarm]getPrice fail. jobId=" + jobId);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -88,7 +80,7 @@ public class SendRequest {
   private static boolean compare(String contract, long nowPrice) {
     try {
       long prePrice = getPriceFromContract(contract);
-      System.out.println(contract +": " + prePrice + "  " + nowPrice);
+      System.out.println(contract + ": " + prePrice + "  " + nowPrice);
       long sub = Math.abs(Math.subtractExact(prePrice, nowPrice));
       Long deviation = deviationMap.get(contract);
       deviation = deviation == null ? DEVIATION : deviation;
@@ -144,14 +136,14 @@ public class SendRequest {
     params.put("parameter", param);
     params.put("visible", true);
     String response = HttpUtil.post(
-            "https", FULLNODE_HOST, TRIGGET_CONSTANT_CONTRACT, params);
+        "https", FULLNODE_HOST, TRIGGET_CONSTANT_CONTRACT, params);
     ObjectMapper mapper = new ObjectMapper();
     Map<String, Object> result = mapper.readValue(response, Map.class);
-    return Optional.ofNullable((List<String>)result.get("constant_result"))
-            .map(constantResult -> constantResult.get(0))
-            .map(str-> str.replaceAll("^0[x|X]", ""))
-            .map(str -> Long.parseLong(str, 16))
-            .orElseThrow(() -> new IllegalArgumentException("can not get the price, contract:" + contract));
+    return Optional.ofNullable((List<String>) result.get("constant_result"))
+        .map(constantResult -> constantResult.get(0))
+        .map(str -> str.replaceAll("^0[x|X]", ""))
+        .map(str -> Long.parseLong(str, 16))
+        .orElseThrow(() -> new IllegalArgumentException("can not get the price, contract:" + contract));
   }
 
   public static void main(String[] args) throws InterruptedException {

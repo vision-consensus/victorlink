@@ -5,25 +5,21 @@ import com.vision.common.Constant;
 import com.vision.job.adapters.AdapterManager;
 import com.vision.job.adapters.BaseAdapter;
 import com.vision.web.common.util.R;
-import com.vision.web.entity.Initiator;
-import com.vision.web.entity.JobRun;
-import com.vision.web.entity.JobSpec;
-import com.vision.web.entity.TaskRun;
-import com.vision.web.entity.TaskSpec;
-import com.vision.web.entity.VisionTx;
+import com.vision.web.entity.*;
 import com.vision.web.service.HeadService;
 import com.vision.web.service.JobRunsService;
 import com.vision.web.service.JobSpecsService;
 import com.vision.web.service.VisionTxService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -175,7 +171,7 @@ public class JobRunner {
         R result = null;
         if (jobCache.isCacheEnable() && taskSpec.getType().equals(Constant.TASK_TYPE_CACHE)) {
           result = new R();
-          jobCache.cachePut(jobRun.getJobSpecID(), (long)preTaskResult.get("result"));
+          jobCache.cachePut(jobRun.getJobSpecID(), (long) preTaskResult.get("result"));
           long value = jobCache.cacheGet(jobRun.getJobSpecID());
           result.put("result", value);
         } else {
@@ -215,7 +211,7 @@ public class JobRunner {
       jobRunsService.updateTaskResult(taskRun.getId(), 2, resultStr, null);
 
       if (taskSpec.getType().equals(Constant.TASK_TYPE_VISION_TX)) {
-        visionTxService.insert((VisionTx)result.get("tx"));
+        visionTxService.insert((VisionTx) result.get("tx"));
       }
     } else {
       jobRunsService.updateTaskResult(taskRun.getId(), 3, null, String.valueOf(result.get("msg")));
@@ -245,7 +241,7 @@ public class JobRunner {
     String contractAddr = eventMap.get("contractAddr").toString();
     if (!contractAddr.equals(jobSpec.getInitiators().get(0).getAddress())) {
       log.error("Contract address({}) in event do not match the log subscriber address({})",
-              contractAddr, jobSpec.getInitiators().get(0).getAddress());
+          contractAddr, jobSpec.getInitiators().get(0).getAddress());
       return false;
     }
 

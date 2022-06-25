@@ -17,24 +17,30 @@ cd ${base_dir}
 The node jar path will be: `${base_dir}/node/build/libs/node-${version}.jar`.
 
 ## Run
+
 - For oracle
+
 ```
 java -jar node-${version}.jar -k ${key.store}
 ```
 
 - For VRF
+
 ```
 java -jar node-${version}.jar -k ${key.store} -vrfK ${vrfKeyStore.yml}
 ```
 
 parameter explain:
+
 - -k: specify the private key file
 - -vrfK: specify the private key file for VRF
 
-You can put your custom `application.yml` or `application-${profile}.yml` with `node-${version}.jar` in the same dir, springboot will load these configuration files with high priority.
-More info refers: [Application Property Files](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config-application-property-files)
+You can put your custom `application.yml` or `application-${profile}.yml` with `node-${version}.jar` in the same dir,
+springboot will load these configuration files with high priority. More info
+refers: [Application Property Files](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config-application-property-files)
 
 - For oracle job creation: (replace the address with the actual oracle contract address)
+
 ```
 curl --location --request POST 'http://localhost:8080/job/specs' \
   --header 'Content-Type: application/json' \
@@ -76,8 +82,9 @@ curl --location --request POST 'http://localhost:8080/job/specs' \
 ```
 
 - For VRF job creation:
-  (replace the address with the actual VRFCoordinator contract address
-  and replace the publicKey with the actual VRF compressed publicKey)
+  (replace the address with the actual VRFCoordinator contract address and replace the publicKey with the actual VRF
+  compressed publicKey)
+
 ```
 curl --location --request POST 'http://localhost:8080/job/specs' \
   --header 'Content-Type: application/json' \

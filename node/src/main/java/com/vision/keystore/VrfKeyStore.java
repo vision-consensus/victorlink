@@ -7,13 +7,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.utils.ByteArray;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Store the private and address info of the node.
@@ -21,40 +22,40 @@ import org.yaml.snakeyaml.Yaml;
 @Slf4j
 @Component
 public class VrfKeyStore {
-    private List<String> privateKeys;
+  private List<String> privateKeys;
 
-    private static HashMap<String, String> vrfKeyMap = Maps.newHashMap(); // <CompressedPublicKey, PrivateKey>
+  private static HashMap<String, String> vrfKeyMap = Maps.newHashMap(); // <CompressedPublicKey, PrivateKey>
 
-    public static void initKeyStore(String filePath) throws FileNotFoundException {
-        vrfKeyMap.clear();
-        if (Strings.isEmpty(filePath)) {
-            filePath = "classpath:vrfKeyStore.yml";
-        }
-        Yaml yaml = new Yaml();
-        HashMap<String, List<String>> vrfConfig = new HashMap<>();
-        if (!filePath.startsWith("classpath")) {
-            log.info("init VRF ECKey from {}", filePath);
-            InputStream inputStream = new FileInputStream(filePath);
-            vrfConfig = yaml.load(inputStream);
-        } else {
-            log.info("init VRF ECKey from classpath");
-            File file =  ResourceUtils.getFile(filePath);
-            InputStream inputStream = new FileInputStream(file.getPath());
-            vrfConfig = yaml.load(inputStream);
-        }
-        ECKey ecKey;
-        for (String privateKey : vrfConfig.get("privateKeys")) {
-            ecKey = ECKey.fromPrivate(ByteArray.fromHexString(privateKey));
-            vrfKeyMap.put(ByteArray.toHexString(ecKey.getPubKeyPoint().getEncoded(true)), privateKey);
-
-            System.out.println("ecKey x:" + ecKey.getPubKeyPoint().normalize().getAffineXCoord()
-                    + ", ecKey y:" + ecKey.getPubKeyPoint().normalize().getAffineYCoord()
-                    + ",\n ecKey compressed:" + ByteArray.toHexString(ecKey.getPubKeyPoint().getEncoded(true))
-                    + ", ecKey uncompressed:" + ECKey.fromPublicOnly(ByteArray.fromHexString(ByteArray.toHexString(ecKey.getPubKeyPoint().getEncoded(true)))).getPubKeyPoint().getXCoord());
-        }
+  public static void initKeyStore(String filePath) throws FileNotFoundException {
+    vrfKeyMap.clear();
+    if (Strings.isEmpty(filePath)) {
+      filePath = "classpath:vrfKeyStore.yml";
     }
-
-    public static HashMap<String, String> getVrfKeyMap() {
-        return vrfKeyMap;
+    Yaml yaml = new Yaml();
+    HashMap<String, List<String>> vrfConfig = new HashMap<>();
+    if (!filePath.startsWith("classpath")) {
+      log.info("init VRF ECKey from {}", filePath);
+      InputStream inputStream = new FileInputStream(filePath);
+      vrfConfig = yaml.load(inputStream);
+    } else {
+      log.info("init VRF ECKey from classpath");
+      File file = ResourceUtils.getFile(filePath);
+      InputStream inputStream = new FileInputStream(file.getPath());
+      vrfConfig = yaml.load(inputStream);
     }
+    ECKey ecKey;
+    for (String privateKey : vrfConfig.get("privateKeys")) {
+      ecKey = ECKey.fromPrivate(ByteArray.fromHexString(privateKey));
+      vrfKeyMap.put(ByteArray.toHexString(ecKey.getPubKeyPoint().getEncoded(true)), privateKey);
+
+      System.out.println("ecKey x:" + ecKey.getPubKeyPoint().normalize().getAffineXCoord()
+          + ", ecKey y:" + ecKey.getPubKeyPoint().normalize().getAffineYCoord()
+          + ",\n ecKey compressed:" + ByteArray.toHexString(ecKey.getPubKeyPoint().getEncoded(true))
+          + ", ecKey uncompressed:" + ECKey.fromPublicOnly(ByteArray.fromHexString(ByteArray.toHexString(ecKey.getPubKeyPoint().getEncoded(true)))).getPubKeyPoint().getXCoord());
+    }
+  }
+
+  public static HashMap<String, String> getVrfKeyMap() {
+    return vrfKeyMap;
+  }
 }

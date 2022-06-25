@@ -3,24 +3,19 @@
 
 <mapper namespace="com.vision.web.mapper.DemoMapper">
 
-	<insert id="create">
-		insert into demo
-		(
-		`key`,
-		`value`
-		)
-		values
-		(
-		#{key},
-		#{value}
-		)
-	</insert>
+    <insert id="create">
+        insert into demo
+        (`key`,
+         `value`)
+        values (#{key},
+                #{value})
+    </insert>
 
-	<select id="queryByKey" parameterType="java.lang.String" resultType="com.vision.web.entity.Demo">
-		select id, `key`, `value`, create_time, update_time
-		from demo
-		where `key` = #{key}
-		order by create_time desc
-	</select>
+    <select id="queryByKey" parameterType="java.lang.String" resultType="com.vision.web.entity.Demo">
+        select id, `key`, `value`, create_time, update_time
+        from demo
+        where `key` = #{key}
+        order by create_time desc
+    </select>
 
 </mapper>

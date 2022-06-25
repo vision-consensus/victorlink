@@ -1,8 +1,9 @@
 package com.vision.web.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
 
 @Data
 public class JobRun {

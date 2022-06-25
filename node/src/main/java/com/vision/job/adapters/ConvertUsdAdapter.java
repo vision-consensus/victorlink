@@ -1,19 +1,14 @@
 package com.vision.job.adapters;
 
-import static com.vision.common.Constant.HTTP_MAX_RETRY_TIME;
-
 import com.google.common.base.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.vision.common.Constant;
 import com.vision.common.util.HttpUtil;
 import com.vision.web.common.util.R;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
 
 @Slf4j
 public class ConvertUsdAdapter extends BaseAdapter {
@@ -25,7 +20,7 @@ public class ConvertUsdAdapter extends BaseAdapter {
 
   @Override
   public R perform(R input) {
-    R result  = new R();
+    R result = new R();
     String url = "https://api-pub.bitfinex.com/v2/ticker/tUSTUSD";
     String response = null;
     try {
@@ -44,7 +39,7 @@ public class ConvertUsdAdapter extends BaseAdapter {
           value = data.getAsDouble();
         }
 
-        value = (long)input.get("result") * value;
+        value = (long) input.get("result") * value;
 
         result.put("result", Math.round(value));
       } catch (Exception e) {

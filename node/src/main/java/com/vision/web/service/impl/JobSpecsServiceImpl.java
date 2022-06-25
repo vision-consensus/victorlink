@@ -4,23 +4,19 @@ import com.vision.common.Constant;
 import com.vision.common.VisionException;
 import com.vision.job.adapters.*;
 import com.vision.web.common.util.JsonUtil;
-import com.vision.web.entity.Initiator;
-import com.vision.web.entity.InitiatorRequest;
-import com.vision.web.entity.JobSpec;
-import com.vision.web.entity.JobSpecRequest;
-import com.vision.web.entity.TaskSpec;
-import com.vision.web.entity.TaskSpecRequest;
+import com.vision.web.entity.*;
 import com.vision.web.mapper.InitiatorMapper;
 import com.vision.web.mapper.JobSpecsMapper;
 import com.vision.web.mapper.TaskSpecsMapper;
 import com.vision.web.service.JobSpecsService;
+import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
 
 @Lazy
 @Service
@@ -167,33 +163,33 @@ public class JobSpecsServiceImpl implements JobSpecsService {
     }
     switch (taskSpec.getType()) {
       case Constant.TASK_TYPE_HTTP_GET:
-        if (((HttpGetAdapter)adapter).getUrl() == null || ((HttpGetAdapter)adapter).getUrl().isEmpty()) {
+        if (((HttpGetAdapter) adapter).getUrl() == null || ((HttpGetAdapter) adapter).getUrl().isEmpty()) {
           throw new VisionException(Constant.TASK_TYPE_HTTP_GET + " task's url parameter is required");
         }
-        if (((HttpGetAdapter)adapter).getPath() == null || ((HttpGetAdapter)adapter).getPath().isEmpty()) {
+        if (((HttpGetAdapter) adapter).getPath() == null || ((HttpGetAdapter) adapter).getPath().isEmpty()) {
           throw new VisionException(Constant.TASK_TYPE_HTTP_GET + " task's path parameter is required");
         }
         break;
       case Constant.TASK_TYPE_HTTP_POST:
-        if (((HttpPostAdapter)adapter).getUrl() == null || ((HttpPostAdapter)adapter).getUrl().isEmpty()) {
+        if (((HttpPostAdapter) adapter).getUrl() == null || ((HttpPostAdapter) adapter).getUrl().isEmpty()) {
           throw new VisionException(Constant.TASK_TYPE_HTTP_POST + " task's url parameter is required");
         }
-        if (((HttpPostAdapter)adapter).getPath() == null || ((HttpPostAdapter)adapter).getPath().isEmpty()) {
+        if (((HttpPostAdapter) adapter).getPath() == null || ((HttpPostAdapter) adapter).getPath().isEmpty()) {
           throw new VisionException(Constant.TASK_TYPE_HTTP_POST + " task's path parameter is required");
         }
         break;
       case Constant.TASK_TYPE_MULTIPLY:
-        if (((MultiplyAdapter)adapter).getTimes() == null || ((MultiplyAdapter)adapter).getTimes() == 0L) {
+        if (((MultiplyAdapter) adapter).getTimes() == null || ((MultiplyAdapter) adapter).getTimes() == 0L) {
           throw new VisionException(Constant.TASK_TYPE_MULTIPLY + " task's times parameter is required");
         }
         break;
       case Constant.TASK_TYPE_VAN_SWAP:
-        if ((((VanSwapAdapter)adapter).getPair() == null ||
-            ((VanSwapAdapter)adapter).getPair().isEmpty()) &&
-            (((VanSwapAdapter)adapter).getPool() == null ||
-                ((VanSwapAdapter)adapter).getPool().isEmpty() ||
-                ((VanSwapAdapter)adapter).getVrc20() == null ||
-                ((VanSwapAdapter)adapter).getVrc20().isEmpty())) {
+        if ((((VanSwapAdapter) adapter).getPair() == null ||
+            ((VanSwapAdapter) adapter).getPair().isEmpty()) &&
+            (((VanSwapAdapter) adapter).getPool() == null ||
+                ((VanSwapAdapter) adapter).getPool().isEmpty() ||
+                ((VanSwapAdapter) adapter).getVrc20() == null ||
+                ((VanSwapAdapter) adapter).getVrc20().isEmpty())) {
           throw new VisionException(Constant.TASK_TYPE_VAN_SWAP + " task's pair or addr parameters are required");
         }
         break;

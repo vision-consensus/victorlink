@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class PairInfo {
-  public PairInfo() {}
+  public PairInfo() {
+  }
 
   private String name;
   private String contract;

@@ -2,8 +2,8 @@ package com.vision.web.service;
 
 import com.vision.web.entity.JobRun;
 import com.vision.web.entity.TaskRun;
+
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
 public interface JobRunsService {
   int insert(JobRun jobRun);

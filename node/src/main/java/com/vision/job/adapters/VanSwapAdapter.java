@@ -3,7 +3,6 @@ package com.vision.job.adapters;
 import com.vision.common.Constant;
 import com.vision.job.adapters.ContractAdapter.TradePair;
 import com.vision.web.common.util.R;
-import java.io.IOException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

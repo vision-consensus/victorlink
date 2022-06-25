@@ -1,12 +1,12 @@
 package com.vision.client;
 
 import com.alibaba.fastjson.JSONObject;
+import com.beust.jcommander.internal.Sets;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-
 import com.google.common.collect.Maps;
 import com.google.protobuf.ByteString;
 import com.vision.client.message.BroadCastResponse;
@@ -21,22 +21,12 @@ import com.vision.job.JobSubscriber;
 import com.vision.keystore.KeyStore;
 import com.vision.web.entity.Head;
 import com.vision.web.entity.VisionTx;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
-
 import com.vision.web.service.HeadService;
 import com.vision.web.service.JobRunsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.DecoderException;
-import org.aspectj.weaver.ast.Or;
 import org.spongycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.vision.common.crypto.ECKey;
@@ -45,12 +35,20 @@ import org.vision.common.utils.JsonUtil;
 import org.vision.common.utils.Sha256Hash;
 import org.vision.core.capsule.TransactionCapsule;
 import org.vision.protos.Protocol;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.beust.jcommander.internal.Sets;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.vision.common.Constant.*;
 
-/** Subscribe the events of the oracle contracts and reply. */
+/**
+ * Subscribe the events of the oracle contracts and reply.
+ */
 @Slf4j
 @Component
 public class OracleClient {
@@ -93,7 +91,7 @@ public class OracleClient {
     }
   }
 
-  private static void listenTask(String addr, String[] filterEvents)  {
+  private static void listenTask(String addr, String[] filterEvents) {
     ScheduledExecutorService listenExecutor = Executors.newSingleThreadScheduledExecutor();
     listenExecutor.scheduleWithFixedDelay(
         () -> {
@@ -162,7 +160,7 @@ public class OracleClient {
     for (String key : map.keySet()) {
       mapAsString.append(key + "=" + map.get(key) + ";");
     }
-    mapAsString.delete(mapAsString.length()-1, mapAsString.length()).append("");
+    mapAsString.delete(mapAsString.length() - 1, mapAsString.length()).append("");
     return mapAsString.toString();
   }
 
@@ -198,50 +196,52 @@ public class OracleClient {
     params.clear();
     params.put("transaction", Hex.toHexString(transactionCapsule.getInstance().toByteArray()));
     response = HttpUtil.post("https", FULLNODE_HOST,
-            "/wallet/broadcasthex", params);
+        "/wallet/broadcasthex", params);
     BroadCastResponse broadCastResponse =
-            JsonUtil.json2Obj(response, BroadCastResponse.class);
+        JsonUtil.json2Obj(response, BroadCastResponse.class);
 
 
   }
 
   private static void listen(String addr, String[] filterEvents) {
-     List<EventData> events = new ArrayList<>();
-      for (String filterEvent : filterEvents) {
-        List<EventData> data = getEventData(addr, filterEvent);
-        if (data != null && data.size() >0 ) {
-          events.addAll(data);
-        }
+    List<EventData> events = new ArrayList<>();
+    for (String filterEvent : filterEvents) {
+      List<EventData> data = getEventData(addr, filterEvent);
+      if (data != null && data.size() > 0) {
+        events.addAll(data);
       }
-      if (events == null || events.size() == 0) {
-        return;
-      }
-      // handle events
-      for (EventData eventData : events) {
-        // update consumeIndexMap
-        updateConsumeMap(addr, eventData.getBlockTimestamp());
+    }
+    if (events == null || events.size() == 0) {
+      return;
+    }
+    // handle events
+    for (EventData eventData : events) {
+      // update consumeIndexMap
+      updateConsumeMap(addr, eventData.getBlockTimestamp());
 
-        // filter the events
-        String eventName = eventData.getEventName();
-        switch (eventName) {
-          case EVENT_NAME:
-            processOracleRequestEvent(addr, eventData);
-            break;
-          case EVENT_NEW_ROUND:
-            processNewRoundEvent(addr, eventData);
-            break;
-          case VRF_EVENT_NAME:
-            processVrfRequestEvent(addr, eventData);
-            break;
-          default:
-            log.warn("unexpected event:{}", eventName);
-            break;
-        }
+      // filter the events
+      String eventName = eventData.getEventName();
+      switch (eventName) {
+        case EVENT_NAME:
+          processOracleRequestEvent(addr, eventData);
+          break;
+        case EVENT_NEW_ROUND:
+          processNewRoundEvent(addr, eventData);
+          break;
+        case VRF_EVENT_NAME:
+          processVrfRequestEvent(addr, eventData);
+          break;
+        default:
+          log.warn("unexpected event:{}", eventName);
+          break;
       }
+    }
 
   }
 
-  /** constructor. */
+  /**
+   * constructor.
+   */
   public static String getBlockByNum(long blockNum) {
     try {
       Map<String, Object> params = Maps.newHashMap();
@@ -262,7 +262,7 @@ public class OracleClient {
     try {
       jobId = new String(
           org.apache.commons.codec.binary.Hex.decodeHex(
-              ((String)eventData.getResult().get("specId"))));
+              ((String) eventData.getResult().get("specId"))));
     } catch (DecoderException e) {
       log.warn("parse job failed, jobid: {}", jobId);
       return;
@@ -274,21 +274,21 @@ public class OracleClient {
     }
     // Number/height of the block in which this request appeared
     long blockNum = eventData.getBlockNumber();
-    String requester = Tool.convertHexToVisionAddr((String)eventData.getResult().get("requester"));
-    String callbackAddr = Tool.convertHexToVisionAddr((String)eventData.getResult().get("callbackAddr"));
-    String callbackFuncId = (String)eventData.getResult().get("callbackFunctionId");
-    long cancelExpiration = Long.parseLong((String)eventData.getResult().get("cancelExpiration"));
-    String data = (String)eventData.getResult().get("data");
-    long dataVersion = Long.parseLong((String)eventData.getResult().get("dataVersion"));
-    String requestId = (String)eventData.getResult().get("requestId");
-    BigInteger payment = new BigInteger((String)eventData.getResult().get("payment"));
+    String requester = Tool.convertHexToVisionAddr((String) eventData.getResult().get("requester"));
+    String callbackAddr = Tool.convertHexToVisionAddr((String) eventData.getResult().get("callbackAddr"));
+    String callbackFuncId = (String) eventData.getResult().get("callbackFunctionId");
+    long cancelExpiration = Long.parseLong((String) eventData.getResult().get("cancelExpiration"));
+    String data = (String) eventData.getResult().get("data");
+    long dataVersion = Long.parseLong((String) eventData.getResult().get("dataVersion"));
+    String requestId = (String) eventData.getResult().get("requestId");
+    BigInteger payment = new BigInteger((String) eventData.getResult().get("payment"));
     if (requestIdsCache.getIfPresent(requestId) != null) {
       log.info("this event has been handled, requestid:{}", requestId);
       return;
     }
     JobSubscriber.receiveLogRequest(
         new EventRequest(blockNum, jobId, requester, callbackAddr, callbackFuncId,
-            cancelExpiration, data, dataVersion,requestId, payment, addr));
+            cancelExpiration, data, dataVersion, requestId, payment, addr));
     requestIdsCache.put(requestId, "");
   }
 
@@ -306,7 +306,7 @@ public class OracleClient {
       log.info("this vrf event has been handled, requestid:{}", requestId);
       return;
     }
-    if(!Strings.isNullOrEmpty(jobRunsService.getByRequestId(requestId))) { // for reboot
+    if (!Strings.isNullOrEmpty(jobRunsService.getByRequestId(requestId))) { // for reboot
       log.info("from DB, this vrf event has been handled, requestid:{}", requestId);
       return;
     }
@@ -349,15 +349,15 @@ public class OracleClient {
   private static void processNewRoundEvent(String addr, EventData eventData) {
     long roundId = 0;
     try {
-      roundId = Long.parseLong((String)eventData.getTopicMap().get("roundId"));
+      roundId = Long.parseLong((String) eventData.getTopicMap().get("roundId"));
     } catch (NumberFormatException e) {
       log.warn("parse job failed, roundId: {}", roundId);
       return;
     }
 
-    String startedBy = ByteArray.toHexString(Tool.decodeFromBase58Check((String)eventData.getTopicMap().get("startedBy")));
+    String startedBy = ByteArray.toHexString(Tool.decodeFromBase58Check((String) eventData.getTopicMap().get("startedBy")));
 
-    long startedAt = Long.parseLong((String)eventData.getDataMap().get("startedAt"));
+    long startedAt = Long.parseLong((String) eventData.getDataMap().get("startedAt"));
     if (requestIdsCache.getIfPresent(addr + roundId) != null) {
       log.info("this event has been handled, address:{}, roundId:{}", addr, roundId);
       return;
@@ -373,8 +373,8 @@ public class OracleClient {
         urlPath, params);
     if (Strings.isNullOrEmpty(response)) {
       int retry = 1;
-      for (;;) {
-        if(retry > HTTP_MAX_RETRY_TIME) {
+      for (; ; ) {
+        if (retry > HTTP_MAX_RETRY_TIME) {
           break;
         }
         try {
@@ -401,7 +401,7 @@ public class OracleClient {
     if ("vtest.infragrid.v.network".equals(HTTP_EVENT_HOST)) { // for test
       params.put("event_name", filterEvent);
       params.put("order_by", "block_timestamp,asc");
-      if(!getMinBlockTimestamp(addr, filterEvent, params)){
+      if (!getMinBlockTimestamp(addr, filterEvent, params)) {
         return null;
       }
       urlPath = String.format("/eventquery/events/contract/%s/%s", addr, filterEvent);
@@ -409,7 +409,7 @@ public class OracleClient {
       params.put("event_name", filterEvent);
       params.put("order_by", "block_timestamp,asc");
       // params.put("only_confirmed", "true");
-      if(!getMinBlockTimestamp(addr, filterEvent, params)){
+      if (!getMinBlockTimestamp(addr, filterEvent, params)) {
         return null;
       }
       urlPath = String.format("/eventquery/events/contract/%s/%s", addr, filterEvent);
@@ -491,7 +491,6 @@ public class OracleClient {
   }
 
 
-
   private static void updateConsumeMap(String addr, long timestamp) {
     if (consumeIndexMap.containsKey(addr)) {
       if (timestamp > consumeIndexMap.get(addr)) {
@@ -502,8 +501,7 @@ public class OracleClient {
     }
   }
 
-  public static boolean getMinBlockTimestamp(String addr, String eventName, Map<String, String> params)
-  {
+  public static boolean getMinBlockTimestamp(String addr, String eventName, Map<String, String> params) {
     switch (eventName) {
       case EVENT_NAME:
       case EVENT_NEW_ROUND:

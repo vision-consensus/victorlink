@@ -10,6 +10,11 @@ import com.vision.web.common.util.R;
 import com.vision.web.entity.JobSpec;
 import com.vision.web.entity.TaskSpec;
 import com.vision.web.service.JobSpecsService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -17,10 +22,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -44,7 +45,7 @@ public class JobCache {
   public void run() {
     if (cacheEnable) {
       init();
-      cacheExecutor.scheduleWithFixedDelay(()->{
+      cacheExecutor.scheduleWithFixedDelay(() -> {
         try {
           System.out.println("test!!!");
           cache();
@@ -75,11 +76,11 @@ public class JobCache {
 
   private void cache() {
     jobList.forEach(
-        jobId->{
+        jobId -> {
           try {
             R ret = getJobResultById(jobId);
             if (ret.get("code").equals(0)) {
-              cachePut(jobId, (Long)ret.get("result"));
+              cachePut(jobId, (Long) ret.get("result"));
             }
           } catch (Exception e) {
             log.warn("cache job {} failed", jobId);
@@ -114,7 +115,7 @@ public class JobCache {
   public Long cacheGet(String jobId) {
     Queue<Long> valueList = jobResultCache.getIfPresent(jobId);
     if (valueList != null) {
-      double average = valueList.stream().mapToLong(v->v).average().orElse(0.0);
+      double average = valueList.stream().mapToLong(v -> v).average().orElse(0.0);
       return Math.round(average);
     } else {
       return null;

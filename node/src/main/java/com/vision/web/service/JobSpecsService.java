@@ -5,6 +5,7 @@ import com.vision.web.entity.Initiator;
 import com.vision.web.entity.JobSpec;
 import com.vision.web.entity.JobSpecRequest;
 import com.vision.web.entity.TaskSpec;
+
 import java.util.List;
 
 public interface JobSpecsService {

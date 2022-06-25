@@ -11,12 +11,6 @@ import com.vision.keystore.KeyStore;
 import com.vision.keystore.VrfKeyStore;
 import com.vision.web.common.ResultStatus;
 import com.vision.web.common.util.R;
-
-import java.io.FileNotFoundException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.*;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.spongycastle.util.encoders.Hex;
@@ -27,6 +21,13 @@ import org.vision.common.utils.JsonUtil;
 import org.vision.common.utils.Sha256Hash;
 import org.vision.core.capsule.TransactionCapsule;
 import org.vision.protos.Protocol;
+
+import java.io.FileNotFoundException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static com.vision.common.Constant.FULLNODE_HOST;
 
@@ -46,20 +47,20 @@ public class VrfTestController {
       String rollerAddr = vrfRollDiceTest.getRollerAddr();
       String contractAddr = vrfRollDiceTest.getContractAddr();
       String ROLLDICE_METHOD_SIGN =
-              "rollDice(uint256,address)";
+          "rollDice(uint256,address)";
       List<Object> parameters = Lists.newArrayList();
       parameters.add(userSeed);
       parameters.add(rollerAddr);
       Map<String, Object> params = Maps.newHashMap();
       params.put("owner_address", KeyStore.getAddr());
       params.put("contract_address", contractAddr);
-      params.put("function_selector",ROLLDICE_METHOD_SIGN);
+      params.put("function_selector", ROLLDICE_METHOD_SIGN);
       params.put("parameter", AbiUtil.parseParameters(ROLLDICE_METHOD_SIGN, parameters));
       params.put("fee_limit", 100_000_000L);
-      params.put("call_value",0);
-      params.put("visible",true);
+      params.put("call_value", 0);
+      params.put("visible", true);
       String response = HttpUtil.post("https", FULLNODE_HOST,
-              "/wallet/triggersmartcontract", params);
+          "/wallet/triggersmartcontract", params);
       TriggerResponse triggerResponse = null;
       triggerResponse = JsonUtil.json2Obj(response, TriggerResponse.class);
 
@@ -76,9 +77,9 @@ public class VrfTestController {
       params.clear();
       params.put("transaction", Hex.toHexString(transactionCapsule.getInstance().toByteArray()));
       response = HttpUtil.post("https", FULLNODE_HOST,
-              "/wallet/broadcasthex", params);
+          "/wallet/broadcasthex", params);
       BroadCastResponse broadCastResponse =
-              JsonUtil.json2Obj(response, BroadCastResponse.class);
+          JsonUtil.json2Obj(response, BroadCastResponse.class);
 
       return R.ok().put("data", "");
     } catch (Exception e) {

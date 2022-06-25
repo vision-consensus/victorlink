@@ -2,11 +2,8 @@ package com.vision.job;
 
 import com.vision.OracleApplication;
 import com.vision.client.EventRequest;
-import com.vision.client.VrfEventRequest;
 import com.vision.common.Constant;
 import com.vision.keystore.KeyStore;
-import java.io.FileNotFoundException;
-import java.math.BigInteger;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Before;
@@ -15,8 +12,11 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.FileNotFoundException;
+import java.math.BigInteger;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes=OracleApplication.class)
+@SpringBootTest(classes = OracleApplication.class)
 public class JobSubscriberTest {
 
   @Before
@@ -66,7 +66,7 @@ public class JobSubscriberTest {
 
     String base = "0000000000000000000000000000000000000000000000000000000000000000";
     String dataHexStr = Long.toHexString(100);
-    int sub = base.length()-dataHexStr.length() - dataHexStr.length();
+    int sub = base.length() - dataHexStr.length() - dataHexStr.length();
     System.out.println(base);
     System.out.println(base.substring(0, sub) + dataHexStr);
   }

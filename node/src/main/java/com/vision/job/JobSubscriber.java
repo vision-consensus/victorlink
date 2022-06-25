@@ -1,19 +1,20 @@
 package com.vision.job;
 
 import com.vision.client.EventRequest;
-import com.vision.client.VrfEventRequest;
 import com.vision.client.FluxAggregator;
 import com.vision.client.OracleClient;
+import com.vision.client.VrfEventRequest;
 import com.vision.client.message.OracleRoundState;
 import com.vision.keystore.KeyStore;
 import com.vision.web.common.util.R;
 import com.vision.web.entity.Initiator;
 import com.vision.web.entity.JobSpec;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -63,9 +64,9 @@ public class JobSubscriber {
     }
 
     if (event.getSeed() == null || event.getSeed().isEmpty() ||
-            event.getKeyHash() == null || event.getKeyHash().isEmpty() ||
-            event.getRequestId() == null || event.getRequestId().isEmpty() ||
-            event.getContractAddr() == null || event.getContractAddr().isEmpty()) {
+        event.getKeyHash() == null || event.getKeyHash().isEmpty() ||
+        event.getRequestId() == null || event.getRequestId().isEmpty() ||
+        event.getContractAddr() == null || event.getContractAddr().isEmpty()) {
       log.error("Necessary parameters in  VRF event request is empty");
       return;
     }

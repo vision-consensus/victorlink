@@ -5,26 +5,26 @@ import {Provider} from "react-redux";
 
 class AppCmp extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-      loading: true,
-      store,
-    };
-  }
+    constructor() {
+        super();
+        this.state = {
+            loading: true,
+            store,
+        };
+    }
 
-  componentDidMount() {
+    componentDidMount() {
 
-  }
+    }
 
-  render() {
-    let {store} = this.state;
-    return (
-        <Provider store={store}>
-        <MainWrap/>
-        </Provider>
-    )
-  }
+    render() {
+        let {store} = this.state;
+        return (
+            <Provider store={store}>
+                <MainWrap/>
+            </Provider>
+        )
+    }
 }
 
 export default AppCmp;

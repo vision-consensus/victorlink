@@ -1,8 +1,9 @@
 package com.vision.client;
 
-import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.math.BigInteger;
 
 @Data
 @AllArgsConstructor

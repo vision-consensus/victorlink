@@ -1,20 +1,17 @@
 package com.vision.client;
+
 import com.google.common.collect.Maps;
 import com.vision.OracleApplication;
-import com.vision.common.AbiUtil;
 import com.vision.common.Config;
-import com.vision.job.JobCache;
-import com.vision.job.JobSubscriber;
+import com.vision.common.Constant;
 import com.vision.keystore.KeyStore;
 import com.vision.web.entity.VisionTx;
 import com.vision.web.service.VisionTxService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vision.common.Constant;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -24,7 +21,7 @@ import java.util.Map;
 import static com.vision.common.Constant.FULFIL_METHOD_SIGN;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes=OracleApplication.class)
+@SpringBootTest(classes = OracleApplication.class)
 public class ReSenderTest {
 
   @BeforeClass
@@ -50,13 +47,13 @@ public class ReSenderTest {
 
     String strFromMap = OracleClient.convertWithIteration(params);
     Map<String, Object> mapFromStr = ReSender.convertWithStream(strFromMap);
-    for (Map.Entry<String, Object> param : params.entrySet())  {
+    for (Map.Entry<String, Object> param : params.entrySet()) {
       Assert.assertEquals(param.getValue().toString(), mapFromStr.get(param.getKey()));
     }
   }
 
   @Test
-  public void testResend(){
+  public void testResend() {
     VisionTx tx = visionTxService.getById(68L);
     System.out.println(tx.getData());
     VisionTx resendTx = ReSender.resendUnconfirmed(tx);

@@ -1,50 +1,31 @@
 package com.vision.client;
 
-import static com.vision.common.Constant.FULFIL_METHOD_SIGN;
-import static com.vision.common.Constant.FULLNODE_HOST;
-import static com.vision.common.Constant.ROUND_STATE_METHOD_SIGN;
-import static com.vision.common.Constant.ROUND_STATE_RESULT_SIGN;
-import static com.vision.common.Constant.SUBMIT_METHOD_SIGN;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.protobuf.ByteString;
-import com.vision.client.message.BroadCastResponse;
 import com.vision.client.message.OracleRoundState;
-import com.vision.client.message.TriggerResponse;
 import com.vision.common.AbiUtil;
 import com.vision.common.Config;
 import com.vision.common.ContractDecoder;
 import com.vision.common.util.HttpUtil;
-import com.vision.common.util.Tool;
 import com.vision.keystore.KeyStore;
 import com.vision.web.entity.VisionTx;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
-import org.spongycastle.util.encoders.Hex;
-import org.vision.common.crypto.ECKey;
-import org.vision.common.utils.ByteArray;
-import org.vision.common.utils.JsonUtil;
-import org.vision.common.utils.Sha256Hash;
-import org.vision.core.capsule.TransactionCapsule;
-import org.vision.protos.Protocol;
 import org.vision.visionjsdk.abi.datatypes.Bool;
 import org.vision.visionjsdk.abi.datatypes.Int;
 import org.vision.visionjsdk.abi.datatypes.Type;
 import org.vision.visionjsdk.abi.datatypes.Uint;
 
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+
+import static com.vision.common.Constant.*;
+
 @Slf4j
 public class FluxAggregator {
 
   /**
-   *
    * @param
    * @return transactionid
    */
@@ -59,8 +40,8 @@ public class FluxAggregator {
     list.add(result);
     params.put("parameter", AbiUtil.parseParameters(SUBMIT_METHOD_SIGN, list));
     params.put("fee_limit", Config.getMinFeeLimit());
-    params.put("call_value",0);
-    params.put("visible",true);
+    params.put("call_value", 0);
+    params.put("visible", true);
 
     OracleClient.triggerSignAndResponse(params, tx);
   }
@@ -76,7 +57,7 @@ public class FluxAggregator {
       list.add(KeyStore.getAddr());
       list.add(roundId);
       params.put("parameter", AbiUtil.parseParameters(ROUND_STATE_METHOD_SIGN, list));
-      params.put("visible",true);
+      params.put("visible", true);
 
       String response = HttpUtil.post("https", FULLNODE_HOST,
           "/wallet/triggerconstantcontract", params);
@@ -85,16 +66,16 @@ public class FluxAggregator {
       Map<String, Object> result = mapper.readValue(response, Map.class);
 
       // decode result
-      List<Type> ret =  ContractDecoder.decode(ROUND_STATE_RESULT_SIGN, ((List<String>)result.get("constant_result")).get(0));
+      List<Type> ret = ContractDecoder.decode(ROUND_STATE_RESULT_SIGN, ((List<String>) result.get("constant_result")).get(0));
       oracleRoundState = new OracleRoundState();
-      oracleRoundState.setEligibleToSubmit(((Bool)ret.get(0)).getValue());
-      oracleRoundState.setRoundId(((Uint)ret.get(1)).getValue().longValue());
-      oracleRoundState.setLatestSubmission(((Int)ret.get(2)).getValue());
-      oracleRoundState.setStartedAt(((Uint)ret.get(3)).getValue().longValue());
-      oracleRoundState.setTimeout(((Uint)ret.get(4)).getValue().longValue());
-      oracleRoundState.setAvailableFunds(((Uint)ret.get(5)).getValue());
-      oracleRoundState.setOracleCount(((Uint)ret.get(6)).getValue().intValue());
-      oracleRoundState.setPaymentAmount(((Uint)ret.get(7)).getValue());
+      oracleRoundState.setEligibleToSubmit(((Bool) ret.get(0)).getValue());
+      oracleRoundState.setRoundId(((Uint) ret.get(1)).getValue().longValue());
+      oracleRoundState.setLatestSubmission(((Int) ret.get(2)).getValue());
+      oracleRoundState.setStartedAt(((Uint) ret.get(3)).getValue().longValue());
+      oracleRoundState.setTimeout(((Uint) ret.get(4)).getValue().longValue());
+      oracleRoundState.setAvailableFunds(((Uint) ret.get(5)).getValue());
+      oracleRoundState.setOracleCount(((Uint) ret.get(6)).getValue().intValue());
+      oracleRoundState.setPaymentAmount(((Uint) ret.get(7)).getValue());
     } catch (Exception e) {
       log.error("get oracle round state info error, msg:" + e.getMessage());
     }

@@ -8,26 +8,26 @@ let initial_password = localStorage.getItem('password');
 console.log();
 
 const initialState = {
-  account: {
-    username: initial_username,
-    password: initial_password,
-  },
-  authentication: initial_authentication === 'true'
+    account: {
+        username: initial_username,
+        password: initial_password,
+    },
+    authentication: initial_authentication === 'true'
 };
 
 export function appReducer(state = initialState, action) {
 
-  switch (action.type) {
+    switch (action.type) {
 
-    case LOGIN: {
+        case LOGIN: {
 
-      return {
-        account: action.result.account,
-        authentication: action.result.authentication
-      };
+            return {
+                account: action.result.account,
+                authentication: action.result.authentication
+            };
+        }
+
+        default:
+            return state;
     }
-
-    default:
-      return state;
-  }
 }

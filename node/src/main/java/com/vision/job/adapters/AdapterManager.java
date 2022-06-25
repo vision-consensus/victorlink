@@ -10,7 +10,7 @@ public class AdapterManager {
   public static BaseAdapter getAdapter(TaskSpec taskSpec) {
     BaseAdapter adapter = null;
     TaskParams params = JsonUtil.json2Obj(taskSpec.getParams(), TaskParams.class);
-    switch (taskSpec.getType()){
+    switch (taskSpec.getType()) {
       case Constant.TASK_TYPE_HTTP_GET:
         adapter = new HttpGetAdapter(params.getGet(), params.getPath());
         break;

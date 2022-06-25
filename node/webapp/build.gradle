@@ -1,18 +1,18 @@
 plugins {
-	id "com.github.node-gradle.node" version "1.3.0"
-	id "java"
+    id "com.github.node-gradle.node" version "1.3.0"
+    id "java"
 }
 
 sourceCompatibility = 1.8
 
 task npmBuild(type: NpmTask, dependsOn: npmInstall) {
-	group = 'node'
-	args = ['run', 'build']
+    group = 'node'
+    args = ['run', 'build']
 }
 
 //jar.dependsOn npmBuild
 
 task npmDev(type: NpmTask, dependsOn: npmInstall) {
-	group = 'node'
-	args = ['run', 'dev']
+    group = 'node'
+    args = ['run', 'dev']
 }

@@ -2,77 +2,117 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vision.web.mapper.TxesMapper">
 
-  <resultMap id="TxResultMap" type="com.vision.web.entity.VisionTx">
-    <result column="id" property="id" jdbcType="BIGINT"/>
-    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
-    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
-    <result column="surrogate_id" property="surrogateId" jdbcType="VARCHAR"/>
-	  <result column="task_run_id" property="taskRunId" jdbcType="VARCHAR"/>
-    <result column="from" property="from" jdbcType="VARCHAR"/>
-    <result column="to" property="to" jdbcType="VARCHAR"/>
-    <result column="data" property="data" jdbcType="LONGVARCHAR"/>
-		<result column="hash" property="hash" jdbcType="VARCHAR"/>
-    <result column="value" property="value" jdbcType="BIGINT"/>
-	  <result column="confirmed" property="confirmed" jdbcType="TINYINT"/>
-	  <result column="sent_at" property="sentAt" jdbcType="BIGINT"/>
-    <result column="signed_raw_tx" property="signedRawTx" jdbcType="VARCHAR"/>
-  </resultMap>
+    <resultMap id="TxResultMap" type="com.vision.web.entity.VisionTx">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="surrogate_id" property="surrogateId" jdbcType="VARCHAR"/>
+        <result column="task_run_id" property="taskRunId" jdbcType="VARCHAR"/>
+        <result column="from" property="from" jdbcType="VARCHAR"/>
+        <result column="to" property="to" jdbcType="VARCHAR"/>
+        <result column="data" property="data" jdbcType="LONGVARCHAR"/>
+        <result column="hash" property="hash" jdbcType="VARCHAR"/>
+        <result column="value" property="value" jdbcType="BIGINT"/>
+        <result column="confirmed" property="confirmed" jdbcType="TINYINT"/>
+        <result column="sent_at" property="sentAt" jdbcType="BIGINT"/>
+        <result column="signed_raw_tx" property="signedRawTx" jdbcType="VARCHAR"/>
+    </resultMap>
 
-  <insert id="insert" parameterType="com.vision.web.entity.VisionTx">
-		insert into txes
-		(
-		`id`,
-	  `task_run_id`,
-  	`surrogate_id`,
-  	`from`,
-  	`to`,
-  	`data`,
-  	`value`,
-  	`hash`,
-  	`sent_at`,
-	  `confirmed`,
-  	`signed_raw_tx`
-		)
-		values
-		(
-		#{id},
-	    #{taskRunId},
-		#{surrogateId},
-		#{from},
-		#{to},
-		#{data},
-		#{value},
-		#{hash},
-		#{sentAt},
-	    #{confirmed},
-		#{signedRawTx}
-		)
-  </insert>
+    <insert id="insert" parameterType="com.vision.web.entity.VisionTx">
+        insert into txes
+        (`id`,
+         `task_run_id`,
+         `surrogate_id`,
+         `from`,
+         `to`,
+         `data`,
+         `value`,
+         `hash`,
+         `sent_at`,
+         `confirmed`,
+         `signed_raw_tx`)
+        values (#{id},
+                #{taskRunId},
+                #{surrogateId},
+                #{from},
+                #{to},
+                #{data},
+                #{value},
+                #{hash},
+                #{sentAt},
+                #{confirmed},
+                #{signedRawTx})
+    </insert>
 
-	<select id="getById" parameterType="java.lang.Long" resultType="com.vision.web.entity.VisionTx" resultMap="TxResultMap">
-		select id, `task_run_id`, `surrogate_id`, `hash`, `signed_raw_tx`, `from`, `to`, `value`, `data`, `sent_at`, `confirmed`, created_at, updated_at
-		from txes
-		where `id` = #{id}
-  	</select>
+    <select id="getById" parameterType="java.lang.Long" resultType="com.vision.web.entity.VisionTx"
+            resultMap="TxResultMap">
+        select id,
+               `task_run_id`,
+               `surrogate_id`,
+               `hash`,
+               `signed_raw_tx`,
+               `from`,
+               `to`,
+               `value`,
+               `data`,
+               `sent_at`,
+               `confirmed`,
+               created_at,
+               updated_at
+        from txes
+        where `id` = #{id}
+    </select>
 
-  	<select id="getByTxId" parameterType="java.lang.String" resultType="com.vision.web.entity.VisionTx" resultMap="TxResultMap">
-		select id, `task_run_id`, `surrogate_id`, `hash`, `signed_raw_tx`, `from`, `to`, `value`, `data`, `sent_at`, `confirmed`, created_at, updated_at
-		from txes
-		where `surrogate_id` = #{txId}
-  	</select>
+    <select id="getByTxId" parameterType="java.lang.String" resultType="com.vision.web.entity.VisionTx"
+            resultMap="TxResultMap">
+        select id,
+               `task_run_id`,
+               `surrogate_id`,
+               `hash`,
+               `signed_raw_tx`,
+               `from`,
+               `to`,
+               `value`,
+               `data`,
+               `sent_at`,
+               `confirmed`,
+               created_at,
+               updated_at
+        from txes
+        where `surrogate_id` = #{txId}
+    </select>
 
-	<update id="update">
-		update txes
-		set id = #{id}, surrogate_id = #{surrogateId}, hash = #{hash}, confirmed=#{confirmed}, signed_raw_tx=#{signedRawTx}, sent_at=#{sentAt}, updated_at=#{updatedAt}
-		where id = #{id}
-	</update>
+    <update id="update">
+        update txes
+        set id           = #{id},
+            surrogate_id = #{surrogateId},
+            hash         = #{hash},
+            confirmed=#{confirmed},
+            signed_raw_tx=#{signedRawTx},
+            sent_at=#{sentAt},
+            updated_at=#{updatedAt}
+        where id = #{id}
+    </update>
 
-	<select id="getByConfirmedAndDate" parameterType="java.util.Map" resultType="com.vision.web.entity.VisionTx" resultMap="TxResultMap">
-		select id, `task_run_id`, `surrogate_id`, `hash`, `signed_raw_tx`, `from`, `to`, `value`, `data`, `sent_at`, `confirmed`, created_at, updated_at
-		from txes
-		where `confirmed` = #{confirmed}
-		and `sent_at` &lt; #{sentAt}
-		order by `sent_at` asc
-	</select>
+    <select id="getByConfirmedAndDate" parameterType="java.util.Map" resultType="com.vision.web.entity.VisionTx"
+            resultMap="TxResultMap">
+        select id,
+               `task_run_id`,
+               `surrogate_id`,
+               `hash`,
+               `signed_raw_tx`,
+               `from`,
+               `to`,
+               `value`,
+               `data`,
+               `sent_at`,
+               `confirmed`,
+               created_at,
+               updated_at
+        from txes
+        where `confirmed` = #{confirmed}
+          and `sent_at` &lt; #{sentAt}
+        order by `sent_at` asc
+    </select>
 
 </mapper>

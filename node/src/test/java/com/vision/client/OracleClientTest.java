@@ -1,8 +1,5 @@
 package com.vision.client;
 
-import static com.vision.common.Constant.ONE_HOUR;
-import static com.vision.common.Constant.ONE_MINUTE;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.vision.OracleApplication;
@@ -10,12 +7,6 @@ import com.vision.common.Constant;
 import com.vision.job.JobCache;
 import com.vision.job.JobSubscriber;
 import com.vision.keystore.KeyStore;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-
 import com.vision.web.entity.Head;
 import com.vision.web.entity.VisionTx;
 import org.junit.BeforeClass;
@@ -24,6 +15,15 @@ import org.spongycastle.util.encoders.Hex;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.vision.common.parameter.CommonParameter;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+
+import static com.vision.common.Constant.ONE_HOUR;
+import static com.vision.common.Constant.ONE_MINUTE;
 
 public class OracleClientTest {
 
@@ -47,20 +47,20 @@ public class OracleClientTest {
   @Test
   public void fulfilTest() throws Exception {
     System.out.println(CommonParameter.getInstance()
-            .getValidContractProtoThreadNum());
+        .getValidContractProtoThreadNum());
     CommonParameter.getInstance().setValidContractProtoThreadNum(1);
     FulfillRequest request = null;
     Constant.HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
     Constant.FULLNODE_HOST = "vpioneer.infragrid.v.network";
     if ("vpioneer.infragrid.v.networko".equals(Constant.FULLNODE_HOST)) {
       request = new FulfillRequest(
-              "",
-              "bf6263dad699d6ef3f80a204a92488776c55a703bbe08f118708179f1345a86d",
-              new BigInteger("10000000000000000000000"),
-              "",
-              "6a9705b400000000000000000000000000000000000000000000000000000000",
-              1600670994,
-              "456");
+          "",
+          "bf6263dad699d6ef3f80a204a92488776c55a703bbe08f118708179f1345a86d",
+          new BigInteger("10000000000000000000000"),
+          "",
+          "6a9705b400000000000000000000000000000000000000000000000000000000",
+          1600670994,
+          "456");
       System.out.println(Hex.toHexString(new BigInteger("16").toByteArray()));
       VisionTx tx = new VisionTx();
       OracleClient.fulfil(request, tx);
@@ -71,7 +71,7 @@ public class OracleClientTest {
   @Test
   public void vrfFulfillTest() throws Exception {
     System.out.println(CommonParameter.getInstance()
-            .getValidContractProtoThreadNum());
+        .getValidContractProtoThreadNum());
     CommonParameter.getInstance().setValidContractProtoThreadNum(1);
     FulfillRequest vrfFulfillRequest = null;
     Constant.HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
@@ -83,18 +83,18 @@ public class OracleClientTest {
 
     if ("api.nileex.io".equals(Constant.FULLNODE_HOST)) {
       vrfFulfillRequest = new FulfillRequest(
-              contractAddr,
-              requestId,
-              new BigInteger("12"),
-              "",
-              "",
-              0,
-              proof);
+          contractAddr,
+          requestId,
+          new BigInteger("12"),
+          "",
+          "",
+          0,
+          proof);
       VisionTx tx = new VisionTx();
-      OracleClient.vrfFulfil(vrfFulfillRequest,tx);
-      assert !(tx.getSurrogateId().startsWith("abc")  && (tx.getSurrogateId().length() == 13)) :"trigger contract failure";
-      assert !(Strings.isNullOrEmpty(tx.getSurrogateId())):"trigger contract failure";
-      System.out.println("transaction ID:"+tx.getSurrogateId());
+      OracleClient.vrfFulfil(vrfFulfillRequest, tx);
+      assert !(tx.getSurrogateId().startsWith("abc") && (tx.getSurrogateId().length() == 13)) : "trigger contract failure";
+      assert !(Strings.isNullOrEmpty(tx.getSurrogateId())) : "trigger contract failure";
+      System.out.println("transaction ID:" + tx.getSurrogateId());
     }
   }
 
@@ -106,7 +106,7 @@ public class OracleClientTest {
     Long minTimestamp;
     Long timestamp;
     System.out.println(CommonParameter.getInstance()
-            .getValidContractProtoThreadNum());
+        .getValidContractProtoThreadNum());
     CommonParameter.getInstance().setValidContractProtoThreadNum(1);
     String addr = "";  //VRFCoordinator address
     List<Head> hisHead = JobSubscriber.jobRunner.headService.getByAddress(addr);
@@ -121,14 +121,13 @@ public class OracleClientTest {
     assert (result) : "getMinBlockTimestampTest failed";
     if (hisHead == null || hisHead.size() == 0) {
       maxTimestamp = System.currentTimeMillis() - ONE_MINUTE;
-      minTimestamp = System.currentTimeMillis() - ONE_MINUTE-5;
-      timestamp = Long.valueOf(params1.get("min_block_timestamp"),10);
-      assert ((timestamp>minTimestamp) && (timestamp <= maxTimestamp)) : "the MinBlockTimestampTest is wrong";
-    }
-    else{
+      minTimestamp = System.currentTimeMillis() - ONE_MINUTE - 5;
+      timestamp = Long.valueOf(params1.get("min_block_timestamp"), 10);
+      assert ((timestamp > minTimestamp) && (timestamp <= maxTimestamp)) : "the MinBlockTimestampTest is wrong";
+    } else {
       expetedTimestamp = hisHead.get(0).getBlockTimestamp();
-      timestamp = Long.valueOf(params1.get("min_block_timestamp"),10);
-      assert (timestamp.equals(expetedTimestamp) ) : "the MinBlockTimestampTest is wrong";
+      timestamp = Long.valueOf(params1.get("min_block_timestamp"), 10);
+      assert (timestamp.equals(expetedTimestamp)) : "the MinBlockTimestampTest is wrong";
     }
 
     //2:
@@ -139,9 +138,9 @@ public class OracleClientTest {
     result = OracleClient.getMinBlockTimestamp(addr, filterEvent2, params2);
     assert (result) : "getMinBlockTimestampTest failed";
     maxTimestamp = System.currentTimeMillis() - ONE_MINUTE;
-    minTimestamp = System.currentTimeMillis() - ONE_MINUTE-5;
-    timestamp = Long.valueOf(params2.get("min_block_timestamp"),10);
-    assert ((timestamp>minTimestamp) && (timestamp <= maxTimestamp)) : "the MinBlockTimestampTest is wrong";
+    minTimestamp = System.currentTimeMillis() - ONE_MINUTE - 5;
+    timestamp = Long.valueOf(params2.get("min_block_timestamp"), 10);
+    assert ((timestamp > minTimestamp) && (timestamp <= maxTimestamp)) : "the MinBlockTimestampTest is wrong";
     //System.out.println("currentTimeMillis is:" + Long.toString(System.currentTimeMillis()));
     //3:
     String filterEvent3 = "NewRound";
@@ -151,9 +150,9 @@ public class OracleClientTest {
     result = OracleClient.getMinBlockTimestamp(addr, filterEvent3, params3);
     assert (result) : "getMinBlockTimestampTest failed";
     maxTimestamp = System.currentTimeMillis() - ONE_MINUTE;
-    minTimestamp = System.currentTimeMillis() - ONE_MINUTE-5;
-    timestamp = Long.valueOf(params3.get("min_block_timestamp"),10);
-    assert ((timestamp>minTimestamp) && (timestamp <= maxTimestamp)) : "the MinBlockTimestampTest is wrong";
+    minTimestamp = System.currentTimeMillis() - ONE_MINUTE - 5;
+    timestamp = Long.valueOf(params3.get("min_block_timestamp"), 10);
+    assert ((timestamp > minTimestamp) && (timestamp <= maxTimestamp)) : "the MinBlockTimestampTest is wrong";
     //System.out.println("currentTimeMillis is:" + Long.toString(System.currentTimeMillis()));
     //4:
     String filterEvent4 = "TESTRequest";

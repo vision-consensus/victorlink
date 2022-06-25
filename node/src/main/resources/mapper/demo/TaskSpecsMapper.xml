@@ -2,64 +2,75 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vision.web.mapper.TaskSpecsMapper">
 
-  <resultMap id="TaskSpecsResultMap" type="com.vision.web.entity.TaskSpec">
-    <result column="id" property="id" jdbcType="BIGINT"/>
-    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
-    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
-    <result column="deleted_at" property="deletedAt" jdbcType="TIMESTAMP"/>
-    <result column="job_spec_id" property="jobSpecID" jdbcType="VARCHAR"/>
-    <result column="type" property="type" jdbcType="VARCHAR"/>
-    <result column="params" property="params" jdbcType="LONGVARCHAR"/>
-		<result column="level" property="level" jdbcType="INTEGER"/>
-  </resultMap>
+    <resultMap id="TaskSpecsResultMap" type="com.vision.web.entity.TaskSpec">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="deleted_at" property="deletedAt" jdbcType="TIMESTAMP"/>
+        <result column="job_spec_id" property="jobSpecID" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="params" property="params" jdbcType="LONGVARCHAR"/>
+        <result column="level" property="level" jdbcType="INTEGER"/>
+    </resultMap>
 
-  <insert id="insert" parameterType="com.vision.web.entity.TaskSpec">
-		insert into task_specs
-		(
-		`id`,
-  	`job_spec_id`,
-  	`type`,
-  	`params`
-		)
-		values
-		(
-		#{id},
-		#{jobSpecID},
-		#{type},
-		#{params}
-		)
-	</insert>
+    <insert id="insert" parameterType="com.vision.web.entity.TaskSpec">
+        insert into task_specs
+        (`id`,
+         `job_spec_id`,
+         `type`,
+         `params`)
+        values (#{id},
+                #{jobSpecID},
+                #{type},
+                #{params})
+    </insert>
 
-	<insert id="insertList" parameterType="com.vision.web.entity.TaskSpec">
-		insert into task_specs
-		(
-		`id`,
-  	`job_spec_id`,
-  	`type`,
-  	`params`
-		)
-		values
-		<foreach collection="taskSpecs" item="taskSpec" index="index" separator=",">
-		(
-		#{taskSpec.id},
-		#{taskSpec.jobSpecID},
-		#{taskSpec.type},
-		#{taskSpec.params}
-		)
-		</foreach>
-	</insert>
+    <insert id="insertList" parameterType="com.vision.web.entity.TaskSpec">
+        insert into task_specs
+        (
+        `id`,
+        `job_spec_id`,
+        `type`,
+        `params`
+        )
+        values
+        <foreach collection="taskSpecs" item="taskSpec" index="index" separator=",">
+            (
+            #{taskSpec.id},
+            #{taskSpec.jobSpecID},
+            #{taskSpec.type},
+            #{taskSpec.params}
+            )
+        </foreach>
+    </insert>
 
-  <select id="getByJobId" parameterType="java.lang.String" resultType="com.vision.web.entity.TaskSpec" resultMap="TaskSpecsResultMap">
-		select id, `job_spec_id`, `type`, `params`, `level`, created_at, updated_at, deleted_at
-		from task_specs
-		where `job_spec_id` = #{jobId}
-		order by `level`,id asc
-	</select>
+    <select id="getByJobId" parameterType="java.lang.String" resultType="com.vision.web.entity.TaskSpec"
+            resultMap="TaskSpecsResultMap">
+        select id,
+               `job_spec_id`,
+               `type`,
+               `params`,
+               `level`,
+               created_at,
+               updated_at,
+               deleted_at
+        from task_specs
+        where `job_spec_id` = #{jobId}
+        order by `level`, id asc
+    </select>
 
-	<select id="getById" parameterType="java.lang.Long" resultType="com.vision.web.entity.TaskSpec" resultMap="TaskSpecsResultMap">
-		select id, `job_spec_id`, `type`, `params`, `level`, created_at, updated_at, deleted_at
-		from task_specs
-		where `id` = #{id}
-	</select>
+    <select id="getById" parameterType="java.lang.Long" resultType="com.vision.web.entity.TaskSpec"
+            resultMap="TaskSpecsResultMap">
+        select id,
+               `job_spec_id`,
+               `type`,
+               `params`,
+               `level`,
+               created_at,
+               updated_at,
+               deleted_at
+        from task_specs
+        where `id` = #{id}
+    </select>
 
 </mapper>

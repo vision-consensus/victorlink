@@ -1,13 +1,14 @@
 package com.vision.user;
 
+import lombok.Data;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-import lombok.Data;
-import org.yaml.snakeyaml.Yaml;
 
 @Data
 public class DeviationConfig {

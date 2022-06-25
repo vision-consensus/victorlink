@@ -3,23 +3,23 @@
     <!-- dev -->
     <springProfile name="dev,vtest">
         <logger name="org.springframework.web" level="INFO"/>
-        <logger name="org.springboot.sample" level="INFO" />
+        <logger name="org.springboot.sample" level="INFO"/>
         <logger name="com.vision" level="DEBUG"/>
     </springProfile>
     <!-- pro -->
     <springProfile name="pro">
         <logger name="org.springframework.web" level="ERROR"/>
-        <logger name="org.springboot.sample" level="ERROR" />
+        <logger name="org.springboot.sample" level="ERROR"/>
         <logger name="com.vision" level="ERROR"/>
     </springProfile>
-    <property name="LOG_HOME" value="." />
+    <property name="LOG_HOME" value="."/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</Pattern>
         </encoder>
     </appender>
     <!-- per day -->
-    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${LOG_HOME}/victorlink.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <FileNamePattern>${LOG_HOME}/victorlink.log.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
@@ -32,8 +32,8 @@
         </encoder>
     </appender>
     <root>
-        <level value="INFO" />
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
+        <level value="INFO"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>

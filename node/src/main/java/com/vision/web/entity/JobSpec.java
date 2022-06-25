@@ -1,9 +1,10 @@
 package com.vision.web.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
 
 @Data
 public class JobSpec implements Serializable {

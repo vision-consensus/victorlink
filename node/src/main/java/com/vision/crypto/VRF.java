@@ -1,8 +1,5 @@
 package com.vision.crypto;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.spongycastle.math.ec.ECPoint;
@@ -10,6 +7,10 @@ import org.spongycastle.util.BigIntegers;
 import org.vision.common.crypto.ECKey;
 import org.vision.common.crypto.Hash;
 import org.vision.common.utils.ByteArray;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Arrays;
 
 @Slf4j
 public class VRF {
@@ -45,7 +46,7 @@ public class VRF {
       32; // zInv  (Leave Output out, because that can be efficiently calculated)
 
 
- @AllArgsConstructor
+  @AllArgsConstructor
   class MarshaledProof {
 
     // byte array length is ProofLength
@@ -140,7 +141,7 @@ public class VRF {
    * concat the 1,2,3,5th point which has the form of p.x||p.y, join uWitness, at last sha3 the result
    */
   public BigInteger scalarFromCurvePoints(ECPoint hash, ECPoint pk, ECPoint gamma, byte[] uWitness,
-      ECPoint v) throws VRFException {
+                                          ECPoint v) throws VRFException {
     if (!(hash.isValid() && pk.isValid() && gamma.isValid() && v.isValid())) {
       throw new VRFException("bad arguments to vrf.ScalarFromCurvePoints");
     }
@@ -240,12 +241,12 @@ public class VRF {
   public BigInteger[] projectiveSub(BigInteger x1, BigInteger z1, BigInteger x2, BigInteger z2) {
     BigInteger num1 = z2.multiply(x1);
     BigInteger num2 = neg(z1.multiply(x2));
-    return new BigInteger[] {num1.add(num2).mod(fieldSize), z1.multiply(z2).mod(fieldSize)};
+    return new BigInteger[]{num1.add(num2).mod(fieldSize), z1.multiply(z2).mod(fieldSize)};
   }
 
   // projectiveMul(x1, z1, x2, z2) is projective coordinates of (x1/z1)×(x2/z2)
   public BigInteger[] projectiveMul(BigInteger x1, BigInteger z1, BigInteger x2, BigInteger z2) {
-    return new BigInteger[] {x1.multiply(x2), z1.multiply(z2)};
+    return new BigInteger[]{x1.multiply(x2), z1.multiply(z2)};
   }
 
   /**
@@ -291,7 +292,7 @@ public class VRF {
       sz = dx;
     }
 
-    return new BigInteger[] {sx.mod(fieldSize), sy.mod(fieldSize), sz.mod(fieldSize)};
+    return new BigInteger[]{sx.mod(fieldSize), sy.mod(fieldSize), sz.mod(fieldSize)};
   }
 
   /**
@@ -341,7 +342,7 @@ public class VRF {
    * @return false if [c]·gamma ≠ [s]·hash else true
    */
   public boolean checkCGammaNotEqualToSHash(BigInteger c, ECPoint gamma, BigInteger s,
-      ECPoint hash) {
+                                            ECPoint hash) {
     ECPoint p1 = gamma.multiply(c.mod(groupOrder)).normalize();
     ECPoint p2 = hash.multiply(s.mod(groupOrder)).normalize();
     return !p1.equals(p2);
@@ -430,13 +431,13 @@ public class VRF {
 
   /**
    * generateProofWithNonce allows external nonce generation for testing purposes
-   *
+   * <p>
    * As with signatures, using nonces which are in any way predictable to an
    * adversary will leak your secret key! Most people should use GenerateProof instead.
    *
    * @param secretKey private key of node, same as k in pseudocode，
-   * @param seed seed provided by use, same as message in pseudocode，
-   * @param nonce one scalar between 0 and p, same as t in pseudocode, not equal with Output Point of VRF
+   * @param seed      seed provided by use, same as message in pseudocode，
+   * @param nonce     one scalar between 0 and p, same as t in pseudocode, not equal with Output Point of VRF
    * @return proof
    */
   public Proof generateProofWithNonce(BigInteger secretKey, BigInteger seed, BigInteger nonce)
@@ -523,7 +524,7 @@ public class VRF {
    * 采用节点的私钥、用户提供的种子生成proof。
    * GenerateProof returns gamma, plus proof that gamma was constructed from seed
    * as mandated from the given secretKey, with public key secretKey*Generator
-   *
+   * <p>
    * secretKey and seed must be less than secp256k1 group order. (Without this
    * constraint on the seed, the samples and the possible public keys would
    * deviate very slightly from uniform distribution.)
