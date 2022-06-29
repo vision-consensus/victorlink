@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.vision.common.Constant.FULLNODE_HOST;
+import static com.vision.common.Constant.FULL_NODE_HOST;
 
 @Slf4j
 @RestController
@@ -59,7 +59,7 @@ public class VrfTestController {
       params.put("fee_limit", 100_000_000L);
       params.put("call_value", 0);
       params.put("visible", true);
-      String response = HttpUtil.post("https", FULLNODE_HOST,
+      String response = HttpUtil.post("https", FULL_NODE_HOST,
           "/wallet/triggersmartcontract", params);
       TriggerResponse triggerResponse = null;
       triggerResponse = JsonUtil.json2Obj(response, TriggerResponse.class);
@@ -76,7 +76,7 @@ public class VrfTestController {
       // broadcast
       params.clear();
       params.put("transaction", Hex.toHexString(transactionCapsule.getInstance().toByteArray()));
-      response = HttpUtil.post("https", FULLNODE_HOST,
+      response = HttpUtil.post("https", FULL_NODE_HOST,
           "/wallet/broadcasthex", params);
       BroadCastResponse broadCastResponse =
           JsonUtil.json2Obj(response, BroadCastResponse.class);

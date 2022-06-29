@@ -136,7 +136,7 @@ public class SendRequest {
     params.put("parameter", param);
     params.put("visible", true);
     String response = HttpUtil.post(
-        "https", FULLNODE_HOST, TRIGGET_CONSTANT_CONTRACT, params);
+        "https", FULL_NODE_HOST, TRIGGER_CONSTANT_CONTRACT, params);
     ObjectMapper mapper = new ObjectMapper();
     Map<String, Object> result = mapper.readValue(response, Map.class);
     return Optional.ofNullable((List<String>) result.get("constant_result"))

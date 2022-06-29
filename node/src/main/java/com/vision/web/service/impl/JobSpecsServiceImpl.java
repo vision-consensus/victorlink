@@ -10,6 +10,7 @@ import com.vision.web.mapper.JobSpecsMapper;
 import com.vision.web.mapper.TaskSpecsMapper;
 import com.vision.web.service.JobSpecsService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -200,6 +201,11 @@ public class JobSpecsServiceImpl implements JobSpecsService {
       case Constant.TASK_TYPE_CACHE:
       case Constant.TASK_TYPE_CONVERT_VS:
       case Constant.TASK_TYPE_RANDOM:
+        break;
+      case Constant.TASK_TYPE_PANCAKE:
+        if (StringUtils.isBlank(((PancakeAdapter) adapter).getUrl())) {
+          throw new VisionException(Constant.TASK_TYPE_PANCAKE + " task's url parameter is required");
+        }
         break;
       default:
         throw new VisionException("Task type " + taskSpec.getType() + " dose dot support");

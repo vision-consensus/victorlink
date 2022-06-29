@@ -34,7 +34,7 @@ public class CheckDeviation {
   private static final long DEVIATION = 10;
   private static final Map<String, Long> deviationMap = new HashMap<>();
   private static String schema = "https";
-  private static String fullnode = FULLNODE_HOST;
+  private static String fullnode = FULL_NODE_HOST;
 
   private static final ScheduledExecutorService comparePriceExecutor = Executors.newSingleThreadScheduledExecutor();
   private static final ScheduledExecutorService intervalUpdateExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -246,7 +246,7 @@ public class CheckDeviation {
     params.put("parameter", param);
     params.put("visible", true);
     String response = HttpUtil.post(
-        schema, fullnode, TRIGGET_CONSTANT_CONTRACT, params);
+        schema, fullnode, TRIGGER_CONSTANT_CONTRACT, params);
     ObjectMapper mapper = new ObjectMapper();
     Map<String, Object> result = mapper.readValue(response, Map.class);
     return Optional.ofNullable((List<String>) result.get("constant_result"))

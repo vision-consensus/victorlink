@@ -5,15 +5,20 @@ import com.google.common.collect.Maps;
 import com.vision.common.Constant;
 import com.vision.common.util.AbiUtil;
 import com.vision.common.util.HttpUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.spongycastle.util.encoders.Hex;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthCall;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.vision.common.Constant.VS_DECIMAL_STR;
 
@@ -37,7 +42,7 @@ public class ContractAdapter {
     params.put("visible", visible);
     String response = null;
     if (flexibleHost) {
-      response = HttpUtil.post("https", Constant.FULLNODE_HOST, GET_ACCOUNT, params);
+      response = HttpUtil.post("https", Constant.FULL_NODE_HOST, GET_ACCOUNT, params);
     } else {
       response = HttpUtil.post("https", VISIONGRID_HOST, GET_ACCOUNT, params);
     }
@@ -120,7 +125,7 @@ public class ContractAdapter {
     // 1. get vs balance
     BigDecimal vsBalance = new BigDecimal(getVSBalance(poolAddr));
     vsBalance = vsBalance.divide(new BigDecimal(VS_DECIMAL_STR), 4, RoundingMode.HALF_UP);
-    // 2. get trc20 decimal
+    // 2. get vrc20 decimal
     int decimals = getDecimal(vrc20Addr);
     StringBuilder strDecimals = new StringBuilder("1");
     while (--decimals >= 0) {

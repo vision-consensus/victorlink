@@ -18,8 +18,7 @@ public class FluxAggregatorTest {
 
   @Test
   public void getOracleRoundState() throws IOException {
-    Constant.FULLNODE_HOST = "api.nileex.io";
-    OracleRoundState ret = FluxAggregator.getOracleRoundState("TGm9cecRyrHAUziKrmRASPLb8fgZbJJmF9", 13);
+    OracleRoundState ret = FluxAggregator.getOracleRoundState("VGm9cecRyrHAUziKrmRASPLb8fgZbJJmF9", 13);
     System.out.println(ret);
   }
 }

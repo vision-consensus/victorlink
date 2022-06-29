@@ -36,7 +36,6 @@ public class RandomAdapter extends BaseAdapter {
 
   final BigInteger groupOrder = ECKey.CURVE_SPEC.getN();
 
-
   public RandomAdapter(String _strPublicKey) {
     strPublicKey = _strPublicKey.replaceFirst("0x", "");
   }
@@ -118,7 +117,7 @@ public class RandomAdapter extends BaseAdapter {
     while (i <= HTTP_MAX_RETRY_TIME && Strings.isNullOrEmpty(response)) {
       try {
         i++;
-        response = HttpUtil.post("https", FULLNODE_HOST, TRIGGET_CONSTANT_CONTRACT, params);
+        response = HttpUtil.post("https", FULL_NODE_HOST, TRIGGER_CONSTANT_CONTRACT, params);
       } catch (Exception ex) {
         log.error("checkFulfillment failed:" + ex.getMessage() + ", num:" + i);
         ex.printStackTrace();

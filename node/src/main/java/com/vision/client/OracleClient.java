@@ -173,7 +173,7 @@ public class OracleClient {
     tx.setData(data);
 
     String response =
-        HttpUtil.post("https", FULLNODE_HOST, "/wallet/triggersmartcontract", params);
+        HttpUtil.post("https", FULL_NODE_HOST, "/wallet/triggersmartcontract", params);
     TriggerResponse triggerResponse = null;
     triggerResponse = JsonUtil.json2Obj(response, TriggerResponse.class);
 
@@ -195,7 +195,7 @@ public class OracleClient {
     // broadcast
     params.clear();
     params.put("transaction", Hex.toHexString(transactionCapsule.getInstance().toByteArray()));
-    response = HttpUtil.post("https", FULLNODE_HOST,
+    response = HttpUtil.post("https", FULL_NODE_HOST,
         "/wallet/broadcasthex", params);
     BroadCastResponse broadCastResponse =
         JsonUtil.json2Obj(response, BroadCastResponse.class);
@@ -248,7 +248,7 @@ public class OracleClient {
       params.put("num", blockNum);
       params.put("visible", true);
       String response =
-          HttpUtil.post("https", FULLNODE_HOST, "/wallet/getblockbynum", params);
+          HttpUtil.post("https", FULL_NODE_HOST, "/wallet/getblockbynum", params);
 
       return response;
     } catch (Exception e) {

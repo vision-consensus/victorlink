@@ -51,8 +51,8 @@ public class OracleClientTest {
     CommonParameter.getInstance().setValidContractProtoThreadNum(1);
     FulfillRequest request = null;
     Constant.HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
-    Constant.FULLNODE_HOST = "vpioneer.infragrid.v.network";
-    if ("vpioneer.infragrid.v.networko".equals(Constant.FULLNODE_HOST)) {
+    Constant.FULL_NODE_HOST = "vpioneer.infragrid.v.network";
+    if ("vpioneer.infragrid.v.networko".equals(Constant.FULL_NODE_HOST)) {
       request = new FulfillRequest(
           "",
           "bf6263dad699d6ef3f80a204a92488776c55a703bbe08f118708179f1345a86d",
@@ -75,13 +75,13 @@ public class OracleClientTest {
     CommonParameter.getInstance().setValidContractProtoThreadNum(1);
     FulfillRequest vrfFulfillRequest = null;
     Constant.HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
-    Constant.FULLNODE_HOST = "vpioneer.infragrid.v.network";
+    Constant.FULL_NODE_HOST = "vpioneer.infragrid.v.network";
 
     String contractAddr = "";
     String requestId = "a5ea08864f4ff9dc8c44f3ed428276d81e07b043e7432abd444ec561f8df5e38";
     String proof = "4e6bda4373bea59ec613b8721bcbb56222ab2ec10b18ba24ae369b7b74ab145224d509bc2778e6d1c8a093522ba7f9b6669a9aef57d2231f856e4b594ad5f4ac46c444e90e27ae8b760f17ca594fa6c1d5093a8f9b70ec17009c8c6797c6b0dcc58344b20add0c06678ac16d5371c00ccf27f7bb5e1b0172e7a67616bc477afbe5046abd3c23e1f1fd79798ffb9c32453cc934a5a204c2a60baf6697dafd2baadd3e4f540d82f6547d6e0472d5d7e687e10f9747c5a765f5d12be669996ffe5eee5dcec71ada05f299c55bb900cc923bc206a32c18c5f9814aa11488ac6fcdea0000000000000000000000002c9e1058b3950c599c2f05e26fecd265b39cf9e45a19dc749b9b608b10ea3fb5817c19c29e86f38e9d9f59120094a727bb3be14a5b986255a1901f957d311c0169f864d34d8cdabfe704b0ba507398ab6cd21034ee79c94324e52fde454e5b1acda999c9427422b020886d19bea3e12ad650e3c1a1a7c1a36f6e0e291267205612901b9e8cd808d3fc16739aec24d5e83b95b8ec24d56002c00539acfe0db7d0997bc90461110794f79ca36c3b77f59f116a7ac50000000000000000000000000000000000000000000000000000000000ff7b5c";
 
-    if ("api.nileex.io".equals(Constant.FULLNODE_HOST)) {
+    if ("api.nileex.io".equals(Constant.FULL_NODE_HOST)) {
       vrfFulfillRequest = new FulfillRequest(
           contractAddr,
           requestId,

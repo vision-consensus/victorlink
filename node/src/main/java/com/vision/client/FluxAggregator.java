@@ -59,7 +59,7 @@ public class FluxAggregator {
       params.put("parameter", AbiUtil.parseParameters(ROUND_STATE_METHOD_SIGN, list));
       params.put("visible", true);
 
-      String response = HttpUtil.post("https", FULLNODE_HOST,
+      String response = HttpUtil.post("https", FULL_NODE_HOST,
           "/wallet/triggerconstantcontract", params);
       ObjectMapper mapper = new ObjectMapper();
       assert response != null;

@@ -9,21 +9,21 @@ public class Constant {
 
   public static final String READONLY_ACCOUNT = KeyStore.getAddr();
 
-  public static final String TRIGGET_CONSTANT_CONTRACT = "/wallet/triggerconstantcontract";
+  public static final String TRIGGER_CONSTANT_CONTRACT = "/wallet/triggerconstantcontract";
 
   public static final String VS_DECIMAL_STR = "1000000";
 
   public static String HTTP_EVENT_HOST = "infragrid.v.network";
-  public static String FULLNODE_HOST = "infragrid.v.network";
+  public static String FULL_NODE_HOST = "infragrid.v.network";
 
   public static void initEnv(String env) {
     if ("vtest".equals(env)) {
       HTTP_EVENT_HOST = "vtest.infragrid.v.network";
-      FULLNODE_HOST = "vtest.infragrid.v.network";
+      FULL_NODE_HOST = "vtest.infragrid.v.network";
     }
     if ("vpioneer".equals(env)) {
       HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
-      FULLNODE_HOST = "vpioneer.infragrid.v.network";
+      FULL_NODE_HOST = "vpioneer.infragrid.v.network";
     }
   }
 
@@ -50,6 +50,7 @@ public class Constant {
   public static final String TASK_TYPE_CACHE = "cache";
   public static final String TASK_TYPE_CONVERT_VS = "convertvs";
   public static final String TASK_TYPE_RANDOM = "random";
+  public static final String TASK_TYPE_PANCAKE = "pancake";
 
   // initiator type
   public static final String INITIATOR_TYPE_RUN_LOG = "runlog";

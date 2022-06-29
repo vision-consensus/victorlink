@@ -47,7 +47,6 @@ public class JobSubscriberTest {
   @Test
   public void receiveNewRoundTest() throws InterruptedException {
 
-    Constant.FULLNODE_HOST = "api.nileex.io";
     JobSubscriber.receiveNewRoundLog("",
         "",
         13,

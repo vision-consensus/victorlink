@@ -76,6 +76,7 @@ dependencies {
     implementation 'io.grpc:grpc-stub:1.31.0'
     implementation "org.bouncycastle:bcprov-jdk15on:1.68"
     implementation 'com.google.guava:guava:28.0-jre'
+    implementation group: 'org.web3j', name: 'core', version: '5.0.0'
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
     compile 'com.alibaba:fastjson:1.2.60'
     compile 'org.aspectj:aspectjweaver:1.8.13'

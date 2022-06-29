@@ -54,6 +54,9 @@ public class AdapterManager {
       case Constant.TASK_TYPE_RANDOM:
         adapter = new RandomAdapter(params.getPublicKey());
         break;
+      case Constant.TASK_TYPE_PANCAKE:
+        adapter = new PancakeAdapter(params.getGet());
+        break;
       default:
         break;
     }
