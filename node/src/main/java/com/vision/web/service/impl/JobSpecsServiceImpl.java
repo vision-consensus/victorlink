@@ -179,6 +179,11 @@ public class JobSpecsServiceImpl implements JobSpecsService {
           throw new VisionException(Constant.TASK_TYPE_HTTP_POST + " task's path parameter is required");
         }
         break;
+      case Constant.TASK_TYPE_THESPORTS:
+        if (((FootballAdapter) adapter).getUrl() == null || ((FootballAdapter) adapter).getUrl().isEmpty()) {
+          throw new VisionException(Constant.TASK_TYPE_THESPORTS + " task's url parameter is required");
+        }
+        break;
       case Constant.TASK_TYPE_MULTIPLY:
         if (((MultiplyAdapter) adapter).getTimes() == null || ((MultiplyAdapter) adapter).getTimes() == 0L) {
           throw new VisionException(Constant.TASK_TYPE_MULTIPLY + " task's times parameter is required");

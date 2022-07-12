@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.protobuf.ByteString;
 import com.vision.client.message.BroadCastResponse;
@@ -38,6 +39,7 @@ import org.vision.protos.Protocol;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -68,7 +70,7 @@ public class OracleClient {
   private static final HashMap<String, String> initiatorEventMap =
       new HashMap<String, String>() {
         {
-          put(INITIATOR_TYPE_RUN_LOG, EVENT_NEW_ROUND); // support multiple events for the same job
+          put(INITIATOR_TYPE_RUN_LOG, EVENT_NAME+","+EVENT_NEW_ROUND); // support multiple events for the same job
           put(INITIATOR_TYPE_RANDOMNESS_LOG, VRF_EVENT_NAME);
         }
       };
@@ -130,6 +132,20 @@ public class OracleClient {
     params.put("contract_address", request.getContractAddr());
     params.put("function_selector", FULFIL_METHOD_SIGN);
     params.put("parameter", AbiUtil.parseParameters(FULFIL_METHOD_SIGN, request.toList()));
+    params.put("fee_limit", Config.getMinFeeLimit());
+    params.put("call_value", 0);
+    params.put("visible", true);
+
+    triggerSignAndResponse(params, tx);
+  }
+
+  public static void fulfilV2(FulfillRequest request, VisionTx tx) throws Exception {
+    System.out.println(AbiUtil.parseParameters(FULFIL_BALL_METHOD_SIGN, request.toList()));
+    Map<String, Object> params = Maps.newHashMap();
+    params.put("owner_address", KeyStore.getAddr());
+    params.put("contract_address", request.getContractAddr());
+    params.put("function_selector", FULFIL_BALL_METHOD_SIGN);
+    params.put("parameter", AbiUtil.parseParameters(FULFIL_BALL_METHOD_SIGN, request.toList()));
     params.put("fee_limit", Config.getMinFeeLimit());
     params.put("call_value", 0);
     params.put("visible", true);
@@ -258,15 +274,7 @@ public class OracleClient {
   }
 
   private static void processOracleRequestEvent(String addr, EventData eventData) {
-    String jobId = null;
-    try {
-      jobId = new String(
-          org.apache.commons.codec.binary.Hex.decodeHex(
-              ((String) eventData.getResult().get("specId"))));
-    } catch (DecoderException e) {
-      log.warn("parse job failed, jobid: {}", jobId);
-      return;
-    }
+    String jobId = String.valueOf(eventData.getTopicMap().get("specId")).substring(32);
     // match jobId
     if (!listeningAddrs.get(addr).contains(jobId)) {
       log.warn("this node does not support this job, jobid: {}", jobId);
@@ -274,14 +282,14 @@ public class OracleClient {
     }
     // Number/height of the block in which this request appeared
     long blockNum = eventData.getBlockNumber();
-    String requester = Tool.convertHexToVisionAddr((String) eventData.getResult().get("requester"));
-    String callbackAddr = Tool.convertHexToVisionAddr((String) eventData.getResult().get("callbackAddr"));
-    String callbackFuncId = (String) eventData.getResult().get("callbackFunctionId");
-    long cancelExpiration = Long.parseLong((String) eventData.getResult().get("cancelExpiration"));
-    String data = (String) eventData.getResult().get("data");
-    long dataVersion = Long.parseLong((String) eventData.getResult().get("dataVersion"));
-    String requestId = (String) eventData.getResult().get("requestId");
-    BigInteger payment = new BigInteger((String) eventData.getResult().get("payment"));
+    String requester = (String) eventData.getDataMap().get("requester");
+    String callbackAddr = (String) eventData.getDataMap().get("callbackAddr");
+    String callbackFuncId = (String) eventData.getDataMap().get("callbackFunctionId");
+    long cancelExpiration = Long.parseLong((String) eventData.getDataMap().get("cancelExpiration"));
+    String data = (String) eventData.getDataMap().get("data");
+    long dataVersion = Long.parseLong((String) eventData.getDataMap().get("dataVersion"));
+    String requestId = (String) eventData.getDataMap().get("requestId");
+    BigInteger payment = new BigInteger((String) eventData.getDataMap().get("payment"));
     if (requestIdsCache.getIfPresent(requestId) != null) {
       log.info("this event has been handled, requestid:{}", requestId);
       return;
@@ -290,6 +298,23 @@ public class OracleClient {
         new EventRequest(blockNum, jobId, requester, callbackAddr, callbackFuncId,
             cancelExpiration, data, dataVersion, requestId, payment, addr));
     requestIdsCache.put(requestId, "");
+
+    List<Head> hisHead = headService.getByAddress(addr);
+    Head head = new Head();
+    head.setAddress(addr);
+    head.setNumber(blockNum);
+    head.setHash("");
+    head.setParentHash("");
+    head.setBlockTimestamp(0L);
+    if (hisHead == null || hisHead.size() == 0) {
+      headService.insert(head);
+    } else if (!hisHead.get(0).getNumber().equals(blockNum)) { //Only update unequal blockNum.
+      head.setId(hisHead.get(0).getId());
+      head.setUpdatedAt(new Date());
+      headService.update(head);
+    } else {
+
+    }
   }
 
   private static void processVrfRequestEvent(String addr, EventData eventData) {
@@ -528,5 +553,17 @@ public class OracleClient {
         return false;
     }
     return true;
+  }
+
+  public static void main(String[] args) {
+    List<Object> list = Lists.newArrayList();
+    list.add(new BigInteger("1222222".getBytes(StandardCharsets.UTF_8)));
+    list.add(BigInteger.valueOf(1L));
+    list.add(BigInteger.valueOf(2L));
+    list.add(BigInteger.valueOf(3L));
+    //fulfillOracleRequest(bytes32,uint256,address,bytes4,uint256,bytes32)
+    String result = AbiUtil.parseParameters("sss(bytes)", list);
+    System.out.println(result);
+    System.out.println(result.length());
   }
 }

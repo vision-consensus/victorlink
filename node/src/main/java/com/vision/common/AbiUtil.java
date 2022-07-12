@@ -245,6 +245,10 @@ public class AbiUtil {
   }
 
   public static void main(String[] args) {
+    String m = "ss(bytes)";
+    String p = "\"00c0\"";
+    System.out.println(parseMethod(m, p));
+
     String method = "test(string,int2,string)";
     String params = "asdf,3123,adf";
 

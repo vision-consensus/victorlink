@@ -42,12 +42,16 @@ public class VisionTxAdapter extends BaseAdapter {
         if ("VisionVRF".equals(linkType)) {
           iLinkType = 1;
         }
+        if ("Football".equalsIgnoreCase(linkType)) {
+          iLinkType = 2;
+        }
       } catch (Exception ex) {
         log.error("no type info for visiontx :" + ex.getMessage());
       }
+
+      VisionTx tx = new VisionTx();
       switch (iLinkType) {
         case 0:
-          VisionTx tx = new VisionTx();
           if (ver == null || ver == 1) {
             EventRequest event = JsonUtil.fromJson((String) input.get("params"), EventRequest.class);
             FulfillRequest fulfillRequest = new FulfillRequest(
@@ -58,9 +62,6 @@ public class VisionTxAdapter extends BaseAdapter {
                 event.getCallbackFunctionId(),
                 event.getCancelExpiration(),
                 codecData((long) input.get("result")));
-            //Long.toString((long)input.get("result")));
-            //(Long) input.get("result"));
-
             OracleClient.fulfil(fulfillRequest, tx);
           } else {
             Map<String, Object> params = JsonUtil.json2Map((String) input.get("params"));
@@ -115,8 +116,25 @@ public class VisionTxAdapter extends BaseAdapter {
           vrfTx.setTaskRunId((String) input.get("taskRunId"));
           vrfTx.setConfirmed(Constant.VisionTxInProgress);
           log.info("vrfTx id : " + vrfTx.getSurrogateId());
-
           return R.ok().put("result", vrfTx.getSurrogateId()).put("tx", vrfTx);
+        case 2:
+          EventRequest event = JsonUtil.fromJson((String) input.get("params"), EventRequest.class);
+          String data = (String) input.get("result");
+          System.out.println(data);
+          FulfillRequest fulfillRequest = new FulfillRequest(
+                  event.getContractAddr(),
+                  event.getRequestId(),
+                  event.getPayment(),
+                  event.getCallbackAddr(),
+                  event.getCallbackFunctionId(),
+                  event.getCancelExpiration(),
+                  data);
+          OracleClient.fulfilV2(fulfillRequest, tx);
+          tx.setValue(0L);
+          tx.setSentAt(System.currentTimeMillis());
+          tx.setTaskRunId((String) input.get("taskRunId"));
+          log.info("tx id : " + tx.getSurrogateId());
+          return R.ok().put("result", tx.getSurrogateId()).put("tx", tx);
         default:
           log.error("unsupported linkType neither oracle nor vrf: " + linkType);
           return R.error(1, "unsupported linkType fulfillRequest failed");
