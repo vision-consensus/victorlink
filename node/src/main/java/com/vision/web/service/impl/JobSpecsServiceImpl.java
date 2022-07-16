@@ -180,7 +180,7 @@ public class JobSpecsServiceImpl implements JobSpecsService {
         }
         break;
       case Constant.TASK_TYPE_THESPORTS:
-        if (((FootballAdapter) adapter).getUrl() == null || ((FootballAdapter) adapter).getUrl().isEmpty()) {
+        if (((TheSportsAdapter) adapter).getUrl() == null || ((TheSportsAdapter) adapter).getUrl().isEmpty()) {
           throw new VisionException(Constant.TASK_TYPE_THESPORTS + " task's url parameter is required");
         }
         break;

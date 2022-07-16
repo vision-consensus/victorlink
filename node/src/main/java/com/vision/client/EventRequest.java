@@ -19,4 +19,5 @@ public class EventRequest {
   private String requestId;
   private BigInteger payment;
   private String contractAddr;
+  private String matchId;
 }

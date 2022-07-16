@@ -294,9 +294,13 @@ public class OracleClient {
       log.info("this event has been handled, requestid:{}", requestId);
       return;
     }
+    String matchId = "";
+    if (eventData.getDataMap().containsKey("8")) {
+      matchId = String.valueOf(eventData.getDataMap().get("8"));
+    }
     JobSubscriber.receiveLogRequest(
         new EventRequest(blockNum, jobId, requester, callbackAddr, callbackFuncId,
-            cancelExpiration, data, dataVersion, requestId, payment, addr));
+            cancelExpiration, data, dataVersion, requestId, payment, addr, matchId));
     requestIdsCache.put(requestId, "");
 
     List<Head> hisHead = headService.getByAddress(addr);

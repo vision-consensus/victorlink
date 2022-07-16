@@ -58,7 +58,7 @@ public class AdapterManager {
         adapter = new PancakeAdapter(params.getGet());
         break;
       case Constant.TASK_TYPE_THESPORTS:
-        adapter = new FootballAdapter(params.getGet());
+        adapter = new TheSportsAdapter(params.getGet());
         break;
       default:
         break;
