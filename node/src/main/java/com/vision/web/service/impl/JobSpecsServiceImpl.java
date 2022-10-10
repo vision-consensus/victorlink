@@ -160,7 +160,7 @@ public class JobSpecsServiceImpl implements JobSpecsService {
   private void checkTaskSpec(TaskSpec taskSpec) throws VisionException {
     BaseAdapter adapter = AdapterManager.getAdapter(taskSpec);
     if (adapter == null) {
-      throw new VisionException("Type " + taskSpec.getType() + " dose dot support");
+      throw new VisionException("Type " + taskSpec.getType() + " dose not support");
     }
     switch (taskSpec.getType()) {
       case Constant.TASK_TYPE_HTTP_GET:
@@ -206,6 +206,8 @@ public class JobSpecsServiceImpl implements JobSpecsService {
       case Constant.TASK_TYPE_CACHE:
       case Constant.TASK_TYPE_CONVERT_VS:
       case Constant.TASK_TYPE_RANDOM:
+        break;
+      case Constant.TASK_TYPE_CHAIN_LINK:
         break;
       case Constant.TASK_TYPE_PANCAKE:
         if (StringUtils.isBlank(((PancakeAdapter) adapter).getUrl())) {

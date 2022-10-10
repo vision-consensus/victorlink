@@ -7,6 +7,10 @@ import com.vision.common.util.AbiUtil;
 import com.vision.common.util.HttpUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.spongycastle.util.encoders.Hex;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
@@ -31,6 +35,34 @@ public class ContractAdapter {
 
   private static final String BALANCE_OF = "balanceOf(address)";
   private static final String DECIMAL = "decimals()";
+
+  public static final String getDecimal(String rpc, String address) throws IOException {
+    Function function = new Function(
+            "decimals",
+            new ArrayList<>(),
+            Collections.singletonList(new TypeReference<Type>() {
+            }));
+    Web3j web3 = Web3j.build(new HttpService(rpc));
+    String encodedFunction = FunctionEncoder.encode(function);
+    EthCall response = web3.ethCall(
+            Transaction.createEthCallTransaction(null, address, encodedFunction),
+            DefaultBlockParameterName.LATEST).send();
+    return response.getValue();
+  }
+
+  public static final String getlatestAnswer(String rpc, String address) throws IOException {
+    Function function = new Function(
+            "latestAnswer",
+            new ArrayList<>(),
+            Collections.singletonList(new TypeReference<Type>() {
+            }));
+    Web3j web3 = Web3j.build(new HttpService(rpc));
+    String encodedFunction = FunctionEncoder.encode(function);
+    EthCall response = web3.ethCall(
+            Transaction.createEthCallTransaction(null, address, encodedFunction),
+            DefaultBlockParameterName.LATEST).send();
+    return response.getValue();
+  }
 
   public static long getVSBalance(String addr) throws Exception {
     return getVSBalance(addr, true, false);

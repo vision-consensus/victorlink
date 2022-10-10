@@ -60,6 +60,9 @@ public class AdapterManager {
       case Constant.TASK_TYPE_THESPORTS:
         adapter = new TheSportsAdapter(params.getGet());
         break;
+      case Constant.TASK_TYPE_CHAIN_LINK:
+        adapter = new ChainLinkAdapter(params.getGet(), params.getPool());
+        break;
       default:
         break;
     }

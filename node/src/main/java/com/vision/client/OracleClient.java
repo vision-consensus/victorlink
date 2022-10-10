@@ -234,7 +234,6 @@ public class OracleClient {
     for (EventData eventData : events) {
       // update consumeIndexMap
       updateConsumeMap(addr, eventData.getBlockTimestamp());
-
       // filter the events
       String eventName = eventData.getEventName();
       switch (eventName) {
@@ -427,17 +426,14 @@ public class OracleClient {
     String httpResponse = null;
     String urlPath;
     Map<String, String> params = Maps.newHashMap();
+    params.put("limit", "3000");
+    params.put("sort", "-timeStamp");
     if ("vtest.infragrid.v.network".equals(HTTP_EVENT_HOST)) { // for test
-      params.put("event_name", filterEvent);
-      params.put("order_by", "block_timestamp,asc");
       if (!getMinBlockTimestamp(addr, filterEvent, params)) {
         return null;
       }
       urlPath = String.format("/eventquery/events/contract/%s/%s", addr, filterEvent);
     } else { // for production
-      params.put("event_name", filterEvent);
-      params.put("order_by", "block_timestamp,asc");
-      // params.put("only_confirmed", "true");
       if (!getMinBlockTimestamp(addr, filterEvent, params)) {
         return null;
       }
@@ -445,6 +441,7 @@ public class OracleClient {
     }
     EventResponse response = null;
     try {
+      log.info("Listening event,param is [{}]", params);
       httpResponse = requestEvent(urlPath, params);
       if (Strings.isNullOrEmpty(httpResponse)) {
         return null;
@@ -535,20 +532,20 @@ public class OracleClient {
       case EVENT_NAME:
       case EVENT_NEW_ROUND:
         if (consumeIndexMap.containsKey(addr)) {
-          params.put("min_block_timestamp", Long.toString(consumeIndexMap.get(addr)));
+          params.put("since", Long.toString(consumeIndexMap.get(addr)));
         } else {
-          params.put("min_block_timestamp", Long.toString(System.currentTimeMillis() - ONE_MINUTE));
+          params.put("since", Long.toString(System.currentTimeMillis() - ONE_MINUTE));
         }
         break;
       case VRF_EVENT_NAME:
         if (consumeIndexMap.containsKey(addr)) {
-          params.put("min_block_timestamp", Long.toString(consumeIndexMap.get(addr)));
+          params.put("since", Long.toString(consumeIndexMap.get(addr)));
         } else {
           List<Head> hisHead = headService.getByAddress(addr);
           if (hisHead == null || hisHead.size() == 0) {
-            params.put("min_block_timestamp", Long.toString(System.currentTimeMillis() - ONE_MINUTE));
+            params.put("since", Long.toString(System.currentTimeMillis() - ONE_MINUTE));
           } else {
-            params.put("min_block_timestamp", Long.toString(hisHead.get(0).getBlockTimestamp()));
+            params.put("since", Long.toString(hisHead.get(0).getBlockTimestamp()));
           }
         }
         break;
@@ -557,17 +554,5 @@ public class OracleClient {
         return false;
     }
     return true;
-  }
-
-  public static void main(String[] args) {
-    List<Object> list = Lists.newArrayList();
-    list.add(new BigInteger("1222222".getBytes(StandardCharsets.UTF_8)));
-    list.add(BigInteger.valueOf(1L));
-    list.add(BigInteger.valueOf(2L));
-    list.add(BigInteger.valueOf(3L));
-    //fulfillOracleRequest(bytes32,uint256,address,bytes4,uint256,bytes32)
-    String result = AbiUtil.parseParameters("sss(bytes)", list);
-    System.out.println(result);
-    System.out.println(result.length());
   }
 }

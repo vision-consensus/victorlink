@@ -26,22 +26,22 @@ public class JobSubscriberTest {
 
   @Test
   public void receiveLogRequestTest() throws InterruptedException {
-    EventRequest event = new EventRequest(
-        100,
-        "f6ee7a6608d6426ea72a9034eff49acc",
-        "",
-        "",
-        "6a9705b400000000000000000000000000000000000000000000000000000000",
-        1600574445,
-        "",
-        1,
-        "1129035f0f96441e7eb4c8ee95b894fb9e01c11d143fd7eb80a59ed33d9d18ed",
-        new BigInteger("1000000"),
-        ""
-    );
-
-    JobSubscriber.receiveLogRequest(event);
-    Thread.sleep(10000);
+//    EventRequest event = new EventRequest(
+//        100,
+//        "f6ee7a6608d6426ea72a9034eff49acc",
+//        "",
+//        "",
+//        "6a9705b400000000000000000000000000000000000000000000000000000000",
+//        1600574445,
+//        "",
+//        1,
+//        "1129035f0f96441e7eb4c8ee95b894fb9e01c11d143fd7eb80a59ed33d9d18ed",
+//        new BigInteger("1000000"),
+//        ""
+//    );
+//
+//    JobSubscriber.receiveLogRequest(event);
+//    Thread.sleep(10000);
   }
 
   @Test

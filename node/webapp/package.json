@@ -66,7 +66,7 @@
     "scriptjs": "^2.5.8",
     "style-loader": "0.19.0",
     "sw-precache-webpack-plugin": "0.11.4",
-    "visionweb": "^2.5.0",
+    "visionweb": "^1.1.6",
     "uglify-es-webpack-plugin": "0.10.0",
     "url-loader": "0.6.2",
     "webpack": "^3.8.1",

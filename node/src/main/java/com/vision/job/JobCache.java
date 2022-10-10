@@ -47,7 +47,6 @@ public class JobCache {
       init();
       cacheExecutor.scheduleWithFixedDelay(() -> {
         try {
-          System.out.println("test!!!");
           cache();
         } catch (Throwable e) {
           log.warn("cache schedule run error, error msg:" + e.getMessage());
