@@ -3,7 +3,7 @@ ADD . /java/
 WORKDIR /java
 RUN gradle clean build -x test
 
-FROM 289631370416.dkr.ecr.us-east-2.amazonaws.com/java:openjdk1.8.1.27
+FROM visionconsensus/victorlink-base:openjdk-1.8
 VOLUME /opt/logs
 VOLUME /opt/conf
 COPY --from=0 /java/node/build/libs/node-v1.0.jar /opt/node-v1.0.jar
