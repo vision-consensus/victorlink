@@ -15,26 +15,12 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/demo")
+@RequestMapping("/")
 @AllArgsConstructor
 public class DemoController extends AbstractController {
-  private final DemoService demoService;
 
-  @RequestMapping("/create")
-  public R create(@RequestBody Demo demo, HttpSession session) {
-    int result = demoService.create(demo);
-    if (result >= 0) {
-      return R.ok().put("data", "");
-    } else {
-      return R.error(ResultStatus.Failed);
-    }
-
-  }
-
-  @RequestMapping("/query")
-  public R query(@RequestParam Map<String, Object> map, HttpSession session) {
-    String key = (String) map.get("key");
-    Demo demo = demoService.queryByKey(key);
-    return R.ok().put("data", demo);
+  @RequestMapping("/health_check")
+  public R health_check() {
+    return R.ok("I'm OK!");
   }
 }

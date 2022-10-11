@@ -1,10 +1,10 @@
 # Tomcat
 server:
-    port: 8080
+    port: 8060
 spring:
     # dev|pro
     profiles:
-        active: dev
+        active: pro
     jackson:
         time-zone: GMT+8
         date-format: yyyy-MM-dd HH:mm:ss

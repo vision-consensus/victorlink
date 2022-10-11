@@ -1,0 +1,22 @@
+version: '3'
+services:
+  vanswap-info-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: victorlink
+    ports:
+      - "8060:8060"
+    environment:
+      - SERVICE_NAME=victorlink
+      - SERVICE_CHECK_HTTP=/health_check
+      - SERVICE_CHECK_INTERVAL=5s
+      - MYSQL_USER=root
+      - MYSQL_PWD=111111
+      - MYSQL_URI=jdbc:mysql://127.0.0.1:3306/oracle?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+    network_mode: bridge
+    volumes:
+      - "/apps/victorlink/logs:/opt/logs"
+      - "/apps/victorlink/conf:/opt/conf"
+    external_links:
+      - xconsul

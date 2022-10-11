@@ -12,7 +12,7 @@
         <logger name="org.springboot.sample" level="ERROR"/>
         <logger name="com.vision" level="ERROR"/>
     </springProfile>
-    <property name="LOG_HOME" value="./logs/"/>
+    <property name="LOG_HOME" value="/opt/logs/"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</Pattern>
