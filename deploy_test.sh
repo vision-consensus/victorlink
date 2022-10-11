@@ -1,7 +1,7 @@
 branch=$1
 if [ ! -n "$branch" ]
 then
-  branch=development
+  branch=master
   echo "not set branch default branch : master"
 else
   echo "build branch "$branch

@@ -1,6 +1,6 @@
 version: '3'
 services:
-  vanswap-info-api:
+  victorlink:
     build:
       context: .
       dockerfile: Dockerfile

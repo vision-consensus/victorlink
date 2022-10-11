@@ -5,8 +5,8 @@ RUN gradle clean build -x test
 
 FROM 289631370416.dkr.ecr.us-east-2.amazonaws.com/java:openjdk1.8.1.27
 VOLUME /opt/logs
-COPY application.properties /opt/application.properties
-COPY application-pro.properties /opt/application-pro.properties
+COPY application.yml /opt/application.yml
+COPY application-pro.yml /opt/application-pro.yml
 COPY --from=0 /java/node/build/libs/node-v1.0.jar /opt/node-v1.0.jar
 RUN sh -c 'touch /opt/node-v1.0.jar'
 RUN     mkdir -p /opt/logs && \
