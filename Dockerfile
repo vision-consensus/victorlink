@@ -1,4 +1,4 @@
-FROM gradle:7.5.1-alpine
+FROM gradle:6.6.1-hotspot
 ADD . /java/
 WORKDIR /java
 RUN gradle clean build -x test
