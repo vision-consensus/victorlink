@@ -1,16 +1,16 @@
 # Tomcat
 server:
-  port: 8080
+    port: 8060
 spring:
-  # dev|pro
-  profiles:
-    active: dev
-  jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
-  servlet:
-    multipart:
-      maxRequestSize: 104857600 #100MB
+    # dev|pro
+    profiles:
+        active: pro
+    jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+    servlet:
+        multipart:
+            maxRequestSize: 104857600 #100MB
 
 management:
   endpoints:
