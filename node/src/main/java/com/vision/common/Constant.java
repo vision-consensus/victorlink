@@ -1,7 +1,9 @@
 package com.vision.common;
 
 import com.vision.keystore.KeyStore;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Constant {
 
   public static final long ONE_HOUR = 60 * 60 * 1000L;
@@ -26,6 +28,9 @@ public class Constant {
       HTTP_EVENT_HOST = "vpioneer.infragrid.v.network";
       FULL_NODE_HOST = "vpioneer.infragrid.v.network";
     }
+    log.info("Env init, current env is {}", env);
+    log.info("HTTP_EVENT_HOST= {}", HTTP_EVENT_HOST);
+    log.info("HTTP_EVENT_HOST= {}", FULL_NODE_HOST);
   }
 
   public static final int HTTP_MAX_RETRY_TIME = 3;
