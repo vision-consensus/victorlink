@@ -21,7 +21,7 @@ management:
 logging:
   level:
     com.vision: info
-    com.vision.web.mapper: debug
+    com.vision.web.mapper: info
 
 mybatis:
   mapper-locations: classpath:/mapper/**/*Mapper.xml
