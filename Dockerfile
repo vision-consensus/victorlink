@@ -16,4 +16,4 @@ RUN     mkdir -p /opt/logs && \
         chmod 640 -R /opt/node-v1.0.jar
 USER nobody
 EXPOSE 8060
-ENTRYPOINT ["java","-jar","/opt/node-v1.0.jar","-k","/opt/conf/key.store","-vrfK","/opt/conf/vrfKeyStore.yml"]
+ENTRYPOINT ["java","-jar","/opt/node-v1.0.jar","-k","/opt/conf/key.store","-vrfK","/opt/conf/vrfKeyStore.yml","-e","vpioneer"]
